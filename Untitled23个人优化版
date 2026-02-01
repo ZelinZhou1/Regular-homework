@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import requests
+import bs4
+import graphviz
+
+# 定义目标网址
+url = "https://peps.python.org/#numerical-index"
+
+# 尝试发送请求并获取响应
+try:
+    res = requests.get(url)
+    res.raise_for_status()  # 如果响应状态码不是 200，会抛出异常
+except requests.exceptions.RequestException as e:
+    print(f"请求失败: {e}")
+    exit(1)
+
+# 查看响应的状态码、编码格式
+print(res.status_code)  
+print(res.apparent_encoding)
+print(res.encoding)
+
+# 使用 BeautifulSoup 解析 HTML 内容
+dom = bs4.BeautifulSoup(res.text, 'html.parser')
+
+# 查看页面中表格的数量
+print(len(dom.find_all("table")))
+
+# 获取目标表格
+table = dom.find("table", attrs={"class": "pep-zero-table docutils align-default"})
+
+# 定义 PEPEntry 类
+class PEPEntry:
+    def __init__(self, status, ID, title, authors, versions):
+        self.status = status
+        self.ID = ID
+        self.title = title
+        self.authors = self.split_authors(authors)
+        self.versions = versions
+
+    def split_authors(self, string):
+        """将作者字段分割为列表，支持处理一些特定格式"""
+        if string == "":
+            return []
+        else:
+            # 处理', Jr.' 的情况
+            string = string.replace(', Jr.', ' Jr.')
+            return string.split(', ')
+
+# 初始化一个空列表来保存所有 PEP 信息
+peps = []
+
+# 遍历表格中的每一行数据
+for tr in table.find("tbody").find_all("tr"):
+    tds = tr.find_all("td")
+    # 确保每一行都有足够的列数
+    if len(tds) < 5:
+        continue
+    status = tds[0].get_text()
+    ID = tds[1].get_text()
+    title = tds[2].get_text()
+    authors = tds[3].get_text()
+    versions = tds[4].get_text()
+    
+    # 创建 PEPEntry 对象并加入列表
+    entry = PEPEntry(status, ID, title, authors, versions)
+    peps.append(entry)
+
+# 打印所有的 PEP 条目
+for pep in peps:
+    print(f"PEP {pep.ID}: {pep.title}, 状态: {pep.status}, 作者: {', '.join(pep.authors)}, 版本: {pep.versions}")
+#异常处理：加入了对 requests.get 请求的异常处理，确保如果请求失败时能优雅地退出并显示错误信息。
+#解析优化：确保解析表格时，如果某一行数据缺少字段，不会导致程序崩溃。
+#类方法注释：在 split_authors 方法中加入了注释，明确其作用。
+#代码结构：添加了更多空行分隔代码块，使结构更清晰。
