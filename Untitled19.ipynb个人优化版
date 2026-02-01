@@ -1,0 +1,98 @@
+class Dog:
+    def __init__(self, name):
+        self.name = name
+        self.tricks = []
+
+    def add_trick(self, trick):
+        """Adds a trick to the dog's list of tricks."""
+        self.tricks.append(trick)
+
+    def __repr__(self):
+        """Represents the dog by its name."""
+        return self.name
+
+# Create dog objects and add tricks
+d1 = Dog("doge")
+d2 = Dog("hajimi")
+d1.add_trick("haren")
+print(d1)  # Should print "doge"
+print(d2.tricks)  # Should print the tricks of d2, an empty list
+
+# Demonstrating inheritance and method overriding
+class Base:
+    def foo(self):
+        print("in Base::foo")
+
+class Derived(Base):
+    def foo(self):
+        print("in Derived::foo")
+
+d = Derived()
+d.foo()  # Should print "in Derived::foo"
+
+# Using isinstance to check object types
+print(isinstance(d, Derived))  # Should return True
+print(isinstance(d, Base))  # Should return True
+
+# Dynamically adding and deleting attributes
+d.name = "zhangsan"
+print(d.name)  # Should print "zhangsan"
+
+# Deleting the name attribute
+del d.name
+
+# Check if the attribute exists before accessing
+if hasattr(d, "name"):
+    print(getattr(d, "name"))
+else:
+    print("no name in object d")  # This will be printed since name is deleted
+
+# Simple function definitions
+def add(a, b):
+    return a + b
+
+# Demonstrating function usage
+print(add(1, 2))  # Should print 3
+print(add("hello ", "world"))  # Should print "hello world"
+
+# Using lambda functions for inline operations
+add1 = lambda x: x + 1
+print(add1(10))  # Should print 11
+
+# Lambda function to add two values
+add = lambda x, y: x + y
+print(add("hello ", "world"))  # Should print "hello world"
+
+# Closure example: outer and inner functions
+def outer():
+    count = 0
+    def inner():
+        nonlocal count
+        count += 1
+        return count
+    return inner
+
+counter = outer()
+print(counter())  # Should print 1
+print(counter())  # Should print 2
+
+counter2 = outer()
+print(counter2())  # Should print 1
+print(counter())  # Should print 3 (independent counter)
+
+# Using functools.partial for partial function application
+from functools import partial
+
+def multiply(x, y):
+    return x * y
+
+double = partial(multiply, 2)
+print(double(5))  # Should print 10
+
+triple = partial(multiply, 3)
+print(triple(5))  # Should print 15
+
+# List comprehension for efficient list creation
+l = [i * 2 for i in range(10) if i % 2 == 0]
+print(l)  # Should print [0, 4, 8, 12, 16]
+
