@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import unittest
+
+
+class MyFirstTest(unittest.TestCase):
+    """A simple example test case."""
+
+    def test_addition(self):
+        """Test that 1 + 2 equals 3."""
+        result = 1 + 2
+        self.assertEqual(result, 3)
+
+    def test_comparison(self):
+        """Test that 3 is greater than 2."""
+        self.assertTrue(3 > 2)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
+#测试方法命名更语义化
+#修改为：
+#test_addition
+#test_comparison
+#更符合单元测试的命名规范，也更容易维护
+#增加了文档字符串（docstring）
+#为类和测试方法添加了说明：
+#便于阅读和理解测试的目的
+#在测试报告中更清晰
