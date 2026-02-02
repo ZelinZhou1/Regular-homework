@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import unittest
+import inspect
+
+
+class MyTestCase(unittest.TestCase):
+    def test_1(self):
+        print("in MyTestCase::test_1")
+
+    def test_2(self):
+        print("in MyTestCase::test_2")
+
+
+def load_tests_from_module(module):
+    """
+    从指定模块中加载所有 unittest.TestCase 的子类
+    """
+    tests = []
+
+    for name, obj in inspect.getmembers(module):
+        if inspect.isclass(obj) and issubclass(obj, unittest.TestCase):
+            tests.append(obj)
+
+    return tests
+
+
+def run_tests(test_classes):
+    """
+    执行所有测试类中的测试方法
+    """
+    for testcase in test_classes:
+        test_obj = testcase()
+
+        # 按字母顺序执行测试方法
+        for name, method in sorted(inspect.getmembers(test_obj)):
+            if name.startswith("test") and callable(method):
+                print(f"Running {testcase.__name__}.{name} ...")
+                try:
+                    method()
+                except Exception as e:
+                    print(f"Test {name} failed: {e}")
+                else:
+                    print(f"Test {name} passed")
+        print("-" * 40)
+
+
+if __name__ == "__main__":
+    # 获取当前模块
+    current_module = __import__("__main__")
+
+    # 加载测试类
+    tests = load_tests_from_module(current_module)
+
+    # 运行测试
+    run_tests(tests)
+
+#使用 inspect 模块替代 dir()
+#增加异常处理
+#增加运行过程提示
