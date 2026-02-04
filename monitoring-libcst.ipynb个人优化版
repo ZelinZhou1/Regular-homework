@@ -1,0 +1,81 @@
+#Part1
+from sys import monitoring
+from functools import wraps
+
+depth = 0
+
+def on_start(code, offset):
+    global depth
+    depth += 1
+    prefix = depth * ">"
+    print(f"{prefix} {code.co_name}")
+
+def on_return(code, offset, retval):
+    global depth
+    prefix = depth * "<"
+    print(f"{prefix} {code.co_name}, return: {retval}")
+    depth -= 1
+
+# 安全获取 tool id
+ID = monitoring.allocate_tool_id()
+
+monitoring.use_tool_id(ID, "tracer")
+monitoring.register_callback(ID, monitoring.events.PY_START, on_start)
+monitoring.register_callback(ID, monitoring.events.PY_RETURN, on_return)
+
+
+def trace(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        monitoring.set_local_events(
+            ID,
+            func.__code__,
+            monitoring.events.PY_START | monitoring.events.PY_RETURN
+        )
+        return func(*args, **kwargs)
+    return inner
+
+
+@trace
+def fib(i):
+    if i <= 1:
+        return 1
+    return fib(i - 1) + fib(i - 2)
+
+
+try:
+    fib(5)
+finally:
+    monitoring.free_tool_id(ID)
+#改进点：使用 monitoring.allocate_tool_id() 替代硬编码
+        # try...finally 确保 ID 一定被释放
+        #使用 functools.wraps 保留函数元信息
+#Part2
+import libcst
+
+
+class FuncIntVisitor(libcst.CSTVisitor):
+    def __init__(self):
+        self.current_function = None
+        self.func_int = {}
+
+    def visit_FunctionDef(self, node: libcst.FunctionDef):
+        self.current_function = node.name.value
+        self.func_int.setdefault(self.current_function, [])
+
+    def leave_FunctionDef(self, node: libcst.FunctionDef):
+        self.current_function = None
+
+    def visit_Integer(self, node: libcst.Integer):
+        if self.current_function:
+            self.func_int[self.current_function].append(node.value)
+        return True
+
+#Part3
+class IntTransformer(libcst.CSTTransformer):
+    def leave_Integer(self, node: libcst.Integer, updated: libcst.Integer):
+        try:
+            value = str(int(updated.value) + 1)
+            return updated.with_changes(value=value)
+        except ValueError:
+            return updated
