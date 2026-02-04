@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from sys import monitoring
+from functools import wraps
+import argparse
+
+
+depth = 0
+
+
+def simple_on_start(code, offset):
+    print(f"entering {code.co_name}")
+
+
+def simple_on_return(code, offset, retval):
+    print(f"leaving {code.co_name}, return value: {retval}")
+
+
+def depth_on_start(code, offset):
+    global depth
+    depth += 1
+    prefix = depth * ">"
+    print(f"{prefix} entering {code.co_name}")
+
+
+def depth_on_return(code, offset, retval):
+    global depth
+    prefix = depth * "<"
+    print(f"{prefix} leaving {code.co_name}, return value: {retval}")
+    depth -= 1
+
+
+def make_tracer(mode="simple"):
+    """
+    根据不同模式创建 tracer 回调
+    """
+    ID = monitoring.allocate_tool_id()
+    monitoring.use_tool_id(ID, "cool_tracer")
+
+    if mode == "simple":
+        monitoring.register_callback(ID, monitoring.events.PY_START, simple_on_start)
+        monitoring.register_callback(ID, monitoring.events.PY_RETURN, simple_on_return)
+
+    elif mode == "depth":
+        monitoring.register_callback(ID, monitoring.events.PY_START, depth_on_start)
+        monitoring.register_callback(ID, monitoring.events.PY_RETURN, depth_on_return)
+
+    return ID
+
+
+def trace(ID):
+    """
+    装饰器模式 tracer
+    """
+    def decorator(func):
+        @wraps(func)
+        def inner(*args, **kwargs):
+            monitoring.set_local_events(
+                ID,
+                func.__code__,
+                monitoring.events.PY_START | monitoring.events.PY_RETURN
+            )
+            return func(*args, **kwargs)
+        return inner
+    return decorator
+
+
+# --------- 示例函数 ---------
+
+def foo():
+    return 30
+
+
+def bar():
+    return foo() + 10
+
+
+def fib(i):
+    if i <= 2:
+        return 1
+    return fib(i - 1) + fib(i - 2)
+
+
+# --------- 主逻辑 ---------
+
+def run_simple():
+    ID = make_tracer("simple")
+    try:
+        monitoring.set_events(ID, monitoring.events.PY_START | monitoring.events.PY_RETURN)
+        bar()
+        monitoring.set_events(ID, 0)
+    finally:
+        monitoring.free_tool_id(ID)
+
+
+def run_depth():
+    ID = make_tracer("depth")
+    try:
+        monitoring.set_events(ID, monitoring.events.PY_START | monitoring.events.PY_RETURN)
+        fib(5)
+        monitoring.set_events(ID, 0)
+    finally:
+        monitoring.free_tool_id(ID)
+
+
+def run_decorator():
+    ID = make_tracer("depth")
+
+    @trace(ID)
+    def traced_fib(i):
+        if i <= 2:
+            return 1
+        return traced_fib(i - 1) + traced_fib(i - 2)
+
+    try:
+        traced_fib(5)
+    finally:
+        monitoring.free_tool_id(ID)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Unified Cool Tracer Tool")
+
+    parser.add_argument(
+        "--mode",
+        choices=["simple", "depth", "decorator"],
+        default="simple",
+        help="Tracing mode to run"
+    )
+
+    args = parser.parse_args()
+
+    if args.mode == "simple":
+        run_simple()
+    elif args.mode == "depth":
+        run_depth()
+    elif args.mode == "decorator":
+        run_decorator()
+
+
+if __name__ == "__main__":
+    main()
