@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import argparse
+import pathlib
+import libcst
+from typing import Dict, List
+
+
+class FuncIntVisitor(libcst.CSTVisitor):
+    """
+    收集每个函数中出现的整数常量
+    """
+
+    def __init__(self):
+        self.current_function = None
+        self.func_int: Dict[str, List[str]] = {}
+
+    def visit_FunctionDef(self, node: libcst.FunctionDef):
+        self.current_function = node.name.value
+        self.func_int.setdefault(self.current_function, [])
+
+    def leave_FunctionDef(self, node: libcst.FunctionDef):
+        self.current_function = None
+
+    def visit_Integer(self, node: libcst.Integer):
+        if self.current_function:
+            self.func_int[self.current_function].append(node.value)
+        return True
+
+
+class CallGraphVisitor(libcst.CSTVisitor):
+    """
+    统计函数调用关系
+    """
+
+    def __init__(self):
+        self.current_function = None
+        self.call_graph: Dict[str, List[str]] = {}
+
+    def visit_FunctionDef(self, node: libcst.FunctionDef):
+        self.current_function = node.name.value
+        self.call_graph.setdefault(self.current_function, [])
+
+    def leave_FunctionDef(self, node: libcst.FunctionDef):
+        self.current_function = None
+
+    def visit_Call(self, node: libcst.Call):
+        if self.current_function:
+            if isinstance(node.func, libcst.Name):
+                func_name = node.func.value
+                self.call_graph[self.current_function].append(func_name)
+        return True
+
+
+class IntTransformer(libcst.CSTTransformer):
+    """
+    将代码中所有整数常量 +1
+    """
+
+    def leave_Integer(self, node: libcst.Integer, updated: libcst.Integer):
+        try:
+            value = str(int(updated.value) + 1)
+            return updated.with_changes(value=value)
+        except ValueError:
+            return updated
+
+
+def analyze_code(source: str):
+    module = libcst.parse_module(source)
+
+    int_visitor = FuncIntVisitor()
+    call_visitor = CallGraphVisitor()
+
+    module.visit(int_visitor)
+    module.visit(call_visitor)
+
+    print("==== Integer Constants in Functions ====")
+    for func, ints in int_visitor.func_int.items():
+        print(f"{func}: {ints}")
+
+    print("\n==== Function Call Graph ====")
+    for func, calls in call_visitor.call_graph.items():
+        print(f"{func} -> {calls}")
+
+
+def transform_code(source: str) -> str:
+    module = libcst.parse_module(source)
+    transformer = IntTransformer()
+    new_module = module.visit(transformer)
+    return new_module.code
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Simple Python Code Analyzer Tool")
+
+    parser.add_argument(
+        "mode",
+        choices=["analyze", "transform"],
+        help="analyze: analyze code, transform: modify integers"
+    )
+
+    parser.add_argument(
+        "file",
+        help="Python source file to process"
+    )
+
+    args = parser.parse_args()
+
+    path = pathlib.Path(args.file)
+
+    if not path.exists():
+        print(f"Error: file {path} does not exist.")
+        return
+
+    source = path.read_text(encoding="utf-8")
+
+    if args.mode == "analyze":
+        analyze_code(source)
+
+    elif args.mode == "transform":
+        new_code = transform_code(source)
+        output = path.with_name(path.stem + "_transformed.py")
+        output.write_text(new_code, encoding="utf-8")
+        print(f"Transformed code saved to: {output}")
+
+
+if __name__ == "__main__":
+    main()
