@@ -1,0 +1,6 @@
+\babel@toc {english}{}\relax 
+\beamer@sectionintoc {1}{文件IO}{2}{0}{1}
+\beamer@sectionintoc {2}{CSV}{5}{0}{2}
+\beamer@sectionintoc {3}{Sqlite3}{9}{0}{3}
+\beamer@sectionintoc {4}{JSON}{27}{0}{4}
+\beamer@sectionintoc {5}{Pickle}{33}{0}{5}

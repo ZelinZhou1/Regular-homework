@@ -1,0 +1,17 @@
+\frametitle{Example of Pickle}
+
+\scriptsize
+\begin{verbatim}
+>>> import pickle
+# Save a dictionary into a pickle file.
+
+>>> favorite_color = {"lion": "yellow", "kitty": "red"}
+
+>>> pickle.dump(favorite_color, open( "save.p", "wb"))
+
+>>> favorite_color = pickle.load(open( "save.p", "rb"))
+
+>>> serialized = pickle.dumps(favorite_color)
+
+>>> deserialized = pickle.loads(serialized)
+\end{verbatim}

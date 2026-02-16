@@ -1,0 +1,670 @@
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{数据存储}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+% \section{问卷结果} % (fold)
+% \label{sec:问卷结果}
+% \begin{frame}
+%   \frametitle{课堂进度如何}
+% 	\includegraphics[width=0.8\linewidth]{chart1.png}
+% 	
+% \end{frame}
+% \begin{frame}
+%   \frametitle{课堂现场编程示例效果如何}
+% 	\includegraphics[width=0.8\linewidth]{chart2.png}
+% 	
+% \end{frame}
+% \begin{frame}
+%   \frametitle{python知识掌握程度 }
+% 	\includegraphics[width=\linewidth]{chart3.png}
+% 	
+% \end{frame}
+% \begin{frame}
+%   \frametitle{上课语速如何}
+% 	\includegraphics[width=0.8\linewidth]{chart4.png}
+% 	
+% \end{frame}
+% \begin{frame}
+%   \frametitle{对于课程有什么其他意见或建议}
+% 	
+% 	\begin{block}
+% 		{典型反馈}
+% 		\begin{itemize}
+% 			\item 多讲些故事吧
+% 			\item 老师可以推荐几本学Python的书吗
+% 			\item 少喝一点可乐比较好
+% 			\item 有时敲代码太快来不及抄就过去了
+% 			\item 希望能讲讲linux
+% 			\item 便于课下练习，适当加些课后练习
+% 		\end{itemize}
+% 	\end{block}
+% \end{frame}
+% \begin{frame}
+%   \frametitle{今天就能用的小知识}
+% 	\begin{block}
+% 		{舒适区}
+% 		舒适区（英语：Comfort zone）或舒适圈，指的是一个人所处的一种环境的状态，和习惯的行动，人会在这种安乐窝的状态中感到舒适并且缺乏危机感。
+% 
+% 		走出舒适区会增加人的焦虑程度，从而产生应激反应，其结果是提升对工作的专注程度。在这个区域中被称作最佳表现区。
+% 		
+% 		但是罗伯特·耶基斯于1907年的报告中提到“焦虑可以改善工作表现，但是当超过某一最佳激励状态之后，工作表现就开始恶化”。\footnote{\url{https://zh.wikipedia.org/wiki/舒适区}}
+% 		\includegraphics[width=0.2\linewidth]{Comfort-zone.jpg}
+% 	\end{block}
+% \end{frame}
+% \begin{frame}
+%   \frametitle{今天就能用的小知识}
+% 	\Large
+% 
+% 	直到名扬天下 你对我把头点
+% 
+% 	最基本的招 练到烂熟就是杀手锏
+% 
+% 	\flushright
+% 	-- C-Block（野家拳）
+% \end{frame}
+% \begin{frame}
+%   \frametitle{今天就能用的小知识}
+% 	\Large
+% 
+% 	无他，但手熟尔
+% 
+% 	\flushright
+% 	-- 欧阳修（卖油翁）
+% 
+% \end{frame}
+% \begin{frame}
+%   \frametitle{书籍推荐}
+% 	Learn Python 3 the hard way (笨办法学Python)\footnote{\url{https://learnpythonthehardway.org/python3/}}	
+% 
+% 	\includegraphics[width=0.2\linewidth]{learn-python-3-the-hard-way.jpg}
+% \end{frame}
+% %课堂进度如何 
+% %课堂现场编程示例效果如何 
+% %python知识掌握程度 
+% %上课语速如何
+% %对于课程有什么其他意见或建议
+% % section 问卷结果 (end)
+
+\section{文件IO} % (fold)
+\label{sec:文件IO}
+\begin{frame}[t,fragile]
+  \frametitle{文件打开与关闭}
+\begin{verbatim}
+open(file, mode='r', buffering=-1, encoding=None, 
+     errors=None, newline=None, 
+     closefd=True, opener=None)	
+\end{verbatim}
+
+\begin{table}
+	\begin{tabular}
+		{lr}
+		\hline
+		标志 & 含义\\
+		\hline
+		'r' 	& 读（默认）\\
+		'w' 	& 写（覆盖）\\
+		'x' 	& 排他性创建\\
+		'a' 	& 写（追加）\\
+		'b' 	& 二进制模式\\
+		't' 	& 文本模式（默认）\\
+		'+' 	& 更新（读写）\\
+		'U' 	& 统一newlines模式（过时）\\
+		\hline
+	\end{tabular}
+\end{table}
+\end{frame}
+\begin{frame}[t,fragile]
+  \frametitle{文件读写}
+	\begin{verbatim}
+handle = open("input.txt", "r")
+content = handle.read()
+handle.close()
+#playing around with content
+handle = open("output.txt", "w")
+handle.write(content)
+handle.close()
+
+\end{verbatim}
+	
+\end{frame}
+\section{CSV}
+
+\begin{frame}
+  \frametitle{CSV}
+The so-called CSV (Comma Separated Values) format is the most common import and
+export format for spreadsheets and databases.  CSV format was used for many
+years prior to attempts to describe the format in a standardized way in
+RFC 4180.  The lack of a well-defined standard means that subtle differences
+often exist in the data produced and consumed by different applications.  These
+differences can make it annoying to process CSV files from multiple sources.
+	
+\end{frame}
+\begin{frame}
+  \frametitle{CSV}
+	\begin{block}
+		{读写方法}
+		\begin{itemize}
+			\item 使用reader()和writer()构造读写对象
+			\item 参数均为文件句柄
+			\item reader对象可以遍历（或转为list）
+			\item writer对象用writerows/writerow写行
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{CSV}
+\begin{verbatim}
+>>> import csv
+>>> students = [['name', 'gender', 'age'],
+... ['zhangsan', 'male', 13],
+... ['lisi', 'female', 14]]
+>>> handle = open('students.csv', 'w')
+>>> writer = csv.writer(handle)
+>>> writer.writerows(students)
+>>> handle.close()
+>>> handle = open('students.csv', 'r')
+>>> reader = csv.reader(handle)
+>>> for row in reader:
+...     print(row)
+\end{verbatim}
+	
+\end{frame}
+
+\section{Sqlite3} % (fold)
+\label{sec:Sqlite3}
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+SQLite is a C library that provides a lightweight disk-based database that
+doesn't require a separate server process and allows accessing the database
+using a nonstandard variant of the SQL query language. Some applications can use
+SQLite for internal data storage.  It's also possible to prototype an
+application using SQLite and then port the code to a larger database such as
+PostgreSQL or Oracle.
+
+\end{frame}
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+The sqlite3 module was written by Gerhard Häring.  It provides a SQL interface
+compliant with the DB-API 2.0 specification described by PEP 249.
+
+\end{frame}
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+To use the module, you must first create a Connection object that
+represents the database.  
+
+You can also supply the special name :memory: to create a database in RAM.
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+
+\begin{verbatim}
+import sqlite3
+conn = sqlite3.connect('example.db')
+# or use :memory:
+conn_memory = sqlite3.connect(':memory:')
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+Once you have a Connection, you can create a Cursor  object
+and call its Cursor.execute method to perform SQL commands:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+\scriptsize
+\begin{verbatim}
+c = conn.cursor()
+
+# Create table
+c.execute('''CREATE TABLE stocks
+          (date text, trans text, symbol text, qty real, price real)''')
+
+# Insert a row of data
+c.execute("INSERT INTO stocks VALUES 
+          ('2006-01-05','BUY','RHAT',100,35.14)")
+
+# Save (commit) the changes
+conn.commit()
+
+# We can also close the connection if we are done with it.
+# Just be sure any changes have been committed or they will be lost.
+conn.close()
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+The data you've saved is persistent and is available in subsequent sessions:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+
+\begin{verbatim}
+
+
+import sqlite3
+conn = sqlite3.connect('example.db')
+c = conn.cursor()
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+Usually your SQL operations will need to use values from Python variables.  You
+shouldn't assemble your query using Python's string operations because doing so
+is insecure; it makes your program vulnerable to an SQL injection attack.	
+
+	\vspace{1cm}
+	\includegraphics[width=0.6\linewidth]{exploits-of-a-mom.png}
+\footnote{\url{https://xkcd.com/327/}}
+\end{frame}
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+Instead, use the DB-API's parameter substitution.  Put ? as a placeholder
+wherever you want to use a value, and then provide a tuple of values as the
+second argument to the cursor's ~Cursor.execute method.  (Other database
+modules may use a different placeholder, such as \%s or :1.) For
+example:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+\scriptsize
+\begin{verbatim}
+# Never do this -- insecure!
+symbol = 'RHAT'
+c.execute("SELECT * FROM stocks WHERE symbol = '%s'" % symbol)
+
+# Do this instead
+t = ('RHAT',)
+c.execute('SELECT * FROM stocks WHERE symbol=?', t)
+print(c.fetchone())
+
+# Larger example that inserts many records at a time
+purchases = [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
+             ('2006-04-05', 'BUY', 'MSFT', 1000, 72.00),
+             ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
+            ]
+c.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t]{Using shortcut methods}
+
+Using the nonstandard execute, executemany and
+executescript methods of the Connection object, your code can
+be written more concisely because you don't have to create the (often
+superfluous) Cursor objects explicitly. 
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{Using shortcut methods}
+	\scriptsize
+\begin{verbatim}
+$ cat a.sql
+
+create table news (id integer, score integer, title text, href text);
+insert into news values (1, 8, "hello world", "http://oscar-lab.org");
+insert into news values (2, 2, "hello charlie", "http://www.dlut.edu.cn");
+$ python3
+>>> import sqlite3
+>>> conn = sqlite3.connect('a.db')
+>>> c = conn.cursor()
+>>> c.executescript(open('a.sql').read())
+>>> list(c.execute('select * from news'))
+[(1, 8, 'hello world', 'http://oscar-lab.org'),
+ (2, 2, 'hello charlie', 'http://www.dlut.edu.cn')]
+
+
+\end{verbatim}
+	
+\end{frame}
+
+\begin{frame}[t,fragile]{Row Objects}
+
+
+\begin{verbatim}
+
+
+>>> conn.row_factory = sqlite3.Row
+>>> c = conn.cursor()
+>>> c.execute('select * from stocks')
+<sqlite3.Cursor object at 0x7f4e7dd8fa80>
+>>> r = c.fetchone()
+>>> type(r)
+<class 'sqlite3.Row'>
+>>> tuple(r)
+('2006-01-05', 'BUY', 'RHAT', 100.0, 35.14)
+>>> len(r)
+5
+>>> r[2]
+'RHAT'
+>>> r.keys()
+['date', 'trans', 'symbol', 'qty', 'price']
+>>> r['qty']
+100.0
+>>> for member in r:
+...     print(member)
+...
+2006-01-05
+BUY
+RHAT
+100.0
+35.14
+
+
+\end{verbatim}
+\end{frame}
+
+
+
+\begin{frame}[t]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+To retrieve data after executing a SELECT statement, you can either treat the
+cursor as an iterator, call the cursor's ~Cursor.fetchone method to
+retrieve a single matching row, or call ~Cursor.fetchall to get a list of the
+matching rows.
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{sqlite3 --- DB-API 2.0 interface for SQLite databases}
+
+	\scriptsize
+
+\begin{verbatim}
+>>> for row in c.execute('SELECT * FROM stocks ORDER BY price'):
+        print(row)
+
+('2006-01-05', 'BUY', 'RHAT', 100, 35.14)
+('2006-03-28', 'BUY', 'IBM', 1000, 45.0)
+('2006-04-06', 'SELL', 'IBM', 500, 53.0)
+('2006-04-05', 'BUY', 'MSFT', 1000, 72.0)
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t]{类型对应}
+    
+SQLite默认支持如下类型: NULL, INTEGER, REAL, TEXT, BLOB.
+
+\begin{table}
+\caption{与Python类型间对应关系}
+\begin{tabular}{lr}
+    \hline
+Python type 	&SQLite type\\
+    \hline
+None 	&NULL    \\
+int 	&INTEGER \\
+float 	&REAL    \\
+str 	&TEXT    \\
+bytes 	&BLOB    \\
+    \hline
+    
+\end{tabular}
+    
+\end{table}
+
+\end{frame}
+
+% section Sqlite3 (end)
+\section{JSON}
+\begin{frame}[t]{JSON}
+    \begin{block}{JSON}
+    JSON(JavaScript Object Notation, JS 对象标记) 是一种轻量级的数据交换格式。它基于 ECMAScript (w3c制定的js规范)的一个子集，采用完全独立于编程语言的文本格式来存储和表示数据。简洁和清晰的层次结构使得 JSON 成为理想的数据交换语言。 易于人阅读和编写，同时也易于机器解析和生成，并有效地提升网络传输效率。
+    \end{block}
+	\centering
+	\begin{figure}
+		\includegraphics[width=.4\textwidth]{definitive-vs-good.jpg}
+		\caption{JavaScript: the definitive guide vs. the good parts}
+	\end{figure}
+\end{frame}
+\begin{frame}[t]{JavaScript}
+    \begin{block}{今天就能开始用的小知识}
+        \begin{itemize}
+            \item JavaScript学名ECMAScript
+            \item JavaScript与Java的关系约等于济科和张继科的关系
+            \item 相比于Java，更接近Lisp/Scheme
+            \item 设计周期为10天\footnote{\url{https://www.w3.org/community/webed/wiki/A\_Short\_History\_of\_JavaScript}}\footnote{\url{https://www.bilibili.com/video/av1623152/}}\footnote{\url{https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript}}\footnote{\url{https://gist.github.com/zhangchn/29015a7f65ce11c94846}}
+        \end{itemize}
+    \end{block}
+\end{frame}
+\begin{frame}[fragile]{Example of JSON\footnote{\url{https://en.wikipedia.org/wiki/JSON}}}
+    \tiny
+    \begin{verbatim}
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "isAlive": true,
+  "age": 25,
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10021-3100"
+  },
+  "phoneNumbers": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "office",
+      "number": "646 555-4567"
+    },
+    {
+      "type": "mobile",
+      "number": "123 456-7890"
+    }
+  ],
+  "children": [],
+  "spouse": null
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[t,fragile]{JSON}
+
+\scriptsize
+\begin{verbatim}
+>>> import json
+>>> json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])
+'["foo", {"bar": ["baz", null, 1.0, 2]}]'
+>>> print(json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True))
+{"a": 0, "b": 0, "c": 0}
+>>> handle = open("output.json", "w")
+>>> json.dump({'foo': 123, 'bar': 'buz'}, handle)
+>>> handle.close()
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[t,fragile]{JSON}
+	\scriptsize
+\begin{verbatim}
+>>> import json
+>>> json.loads('["foo", {"bar":["baz", null, 1.0, 2]}]')
+['foo', {'bar': ['baz', None, 1.0, 2]}]
+>>> from io import StringIO
+>>> handle = open('output.json', ``r'')
+
+>>> b = json.load(handle)
+
+>>> print(b)
+{'foo': 123, 'bar': 'buz'}
+\end{verbatim}
+\end{frame}
+\section{Pickle}
+\begin{frame}[t]{Pickle}
+    \begin{block}{Pickle}
+The pickle module implements binary protocols for serializing and de-serializing a Python object structure. “Pickling” is the process whereby a Python object hierarchy is converted into a byte stream, and “unpickling” is the inverse operation, whereby a byte stream (from a binary file or bytes-like object) is converted back into an object hierarchy. 
+    \end{block}
+	\centering
+\end{frame}
+\begin{frame}[t]{Pickle vs. JSON}
+	\begin{block}{Comparison with JSON}
+
+		\begin{enumerate}
+				\scriptsize
+			\item JSON is a text serialization format (it outputs unicode text, although most of the time it is then encoded to utf-8), while pickle is a binary serialization format;
+
+			\item JSON is human-readable, while pickle is not;
+
+			\item JSON is interoperable and widely used outside of the Python ecosystem, while pickle is Python-specific;
+
+			\item JSON, by default, can only represent a subset of the Python built-in types, and no custom classes; pickle can represent an extremely large number of Python types (many of them automatically, by clever usage of Python’s introspection facilities; complex cases can be tackled by implementing specific object APIs);
+
+			\item Unlike pickle, deserializing untrusted JSON does not in itself create an arbitrary code execution vulnerability.
+		\end{enumerate}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{Example of Pickle}
+
+\scriptsize
+\begin{verbatim}
+>>> import pickle
+# Save a dictionary into a pickle file.
+
+>>> favorite_color = {"lion": "yellow", "kitty": "red"}
+
+>>> pickle.dump(favorite_color, open( "save.p", "wb"))
+
+>>> favorite_color = pickle.load(open( "save.p", "rb"))
+
+>>> serialized = pickle.dumps(favorite_color)
+
+>>> deserialized = pickle.loads(serialized)
+\end{verbatim}
+\end{frame}
+\end{document}
