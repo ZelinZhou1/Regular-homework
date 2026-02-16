@@ -1,0 +1,621 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{Python Requests}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\begin{frame}[t]{HTTP基础知识}
+    \begin{block}
+        {HTTP}
+        \begin{itemize}
+            \item GET 向指定的资源发出“显示”请求。使用GET方法应该只用在读取数据，而不应当被用于产生“副作用”的操作中，例如在Web Application中。其中一个原因是GET可能会被网络蜘蛛等随意访问。
+            \item HEAD 与GET方法一样，都是向服务器发出指定资源的请求。只不过服务器将不传回资源的本文部分。它的好处在于，使用这个方法可以在不必传输全部内容的情况下，就可以获取其中“关于该资源的信息”（元信息或称元数据）。
+        \end{itemize}
+    \end{block}
+    
+\end{frame}
+
+\begin{frame}[t]{HTTP基础知识}
+    \begin{block}
+        {HTTP}
+        \begin{itemize}
+            \item POST 向指定资源提交数据，请求服务器进行处理（例如提交表单或者上传文件）。数据被包含在请求本文中。这个请求可能会创建新的资源或修改现有资源，或二者皆有。
+            \item PUT 向指定资源位置上传其最新内容。
+            \item DELETE 请求服务器删除Request-URI所标识的资源。
+            \item TRACE 回显服务器收到的请求，主要用于测试或诊断。
+        \end{itemize}
+    \end{block}
+    
+\end{frame}
+
+\begin{frame}[t]{HTTP基础知识}
+    \begin{block}
+        {HTTP}
+        \begin{itemize}
+            \item OPTIONS 这个方法可使服务器传回该资源所支持的所有HTTP请求方法。用'*'来代替资源名称，向Web服务器发送OPTIONS请求，可以测试服务器功能是否正常运作。
+            \item CONNECT HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。通常用于SSL加密服务器的链接（经由非加密的HTTP代理服务器）。
+        \end{itemize}
+    \end{block}
+    
+\end{frame}
+% \begin{frame}[t,fragile]{数据准备}
+%     \scriptsize
+% \begin{verbatim}
+% $head -n 10 robots.txt # from taobao.com/robots.txt
+% 
+% User-agent:  Baiduspider
+% Allow:  /article
+% Allow:  /oshtml
+% Allow:  /wenzhang
+% Disallow:  /product/
+% Disallow:  /
+% 
+% User-Agent:  Googlebot
+% Allow:  /article
+% Allow:  /oshtml
+%         
+% \end{verbatim}
+%     
+% \end{frame}
+% 
+% \begin{frame}
+%   \frametitle{数据准备}
+% 	\includegraphics[width=0.8\linewidth]{HTML-Tags-Tattoo.jpg}
+% \end{frame}
+% 
+% \begin{frame}[t,fragile]{数据准备}
+%     \scriptsize
+% \begin{verbatim}
+% $cat index.html # use type in win32
+% <html>
+%     <head>
+%     </head>
+%     <body>
+%         <h1>Title</h1>
+%         <p> This is a paragraph</p>
+%         <table>
+%             <tr>
+%                 <td>A11</td> <td>A12</td> <td>A13</td>
+%             </tr>
+%             <tr>
+%                 <td>A21</td> <td>A22</td> <td>A23</td>
+%             </tr>
+%             <tr>
+%                 <td>A31</td> <td>A32</td> <td>A33</td>
+%             </tr>
+%         </table>
+%     </body>
+% </html>
+% $python3 -m http.server 
+% Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ... 
+%         
+% \end{verbatim}
+%     
+% \end{frame}
+% 
+% \begin{frame}{本地vs.远程}
+%     \Huge
+%     我发起疯来，连自己都爬
+%     
+% \end{frame}
+\section{Robots协议} % (fold)
+\label{sec:Robots协议}
+\begin{frame}
+  \frametitle{机器人协议}
+	robots.txt（统一小写）是一种存放于网站根目录下的ASCII编码的文本文件，它通常告诉网络搜索引擎的漫游器（又称网络蜘蛛），此网站中的哪些内容是不应被搜索引擎的漫游器获取的，哪些是可以被漫游器获取的。因为一些系统中的URL是大小写敏感的，所以robots.txt的文件名应统一为小写。robots.txt应放置于网站的根目录下。如果想单独定义搜索引擎的漫游器访问子目录时的行为，那么可以将自定的设置合并到根目录下的robots.txt，或者使用robots元数据（Metadata，又称元数据）。\footnote{\url{https://zh.wikipedia.org/wiki/Robots.txt}}
+\end{frame}
+
+\begin{frame}
+  \frametitle{机器人协议}
+	\begin{block}
+		{协议特点}
+		\begin{itemize}
+			\item robots.txt协议并不是一个规范，而只是约定俗成的，所以并不能保证网站的隐私。
+			\item 用字符串比较来确定是否获取URL，所以目录末尾有与没有斜杠“/”表示的是不同的URL。
+			\item 允许使用类似"Disallow: *.gif"这样的通配符。
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{机器人协议}
+	\begin{block}
+		{允许所有的机器人：}
+\begin{verbatim}
+User-agent: *
+Disallow:
+\end{verbatim}
+	\end{block}
+	\begin{block}
+		{另一写法}
+\begin{verbatim}
+User-agent: *
+Allow:/
+\end{verbatim}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{机器人协议}
+	\begin{block}
+		{仅允许特定的机器人：}
+\begin{verbatim}
+User-agent: name_spider
+Allow:
+\end{verbatim}
+	\end{block}
+	\begin{block}
+		{拦截所有的机器人}
+\begin{verbatim}
+User-agent: *
+Disallow: /
+\end{verbatim}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{机器人协议}
+	\begin{block}
+		{禁止所有机器人访问特定目录}
+\begin{verbatim}
+User-agent: *
+Disallow: /cgi-bin/
+Disallow: /images/
+Disallow: /tmp/
+Disallow: /private/
+\end{verbatim}
+	\end{block}
+	\begin{block}
+		{仅禁止坏爬虫访问特定目录}
+\begin{verbatim}
+User-agent: BadBot
+Disallow: /private/
+\end{verbatim}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{机器人协议}
+	\begin{block}
+		{禁止所有机器人访问特定目录}
+\begin{verbatim}
+User-agent: *
+Disallow: /*.php$
+Disallow: /*.js$
+Disallow: /*.inc$
+Disallow: /*.css$
+\end{verbatim}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{如何遵守协议}
+	\begin{block}
+		{}
+		\begin{itemize}
+			\item 人工阅读robots.txt
+			\item 使用urllib.robotparser
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{解析robots.txt}
+	\scriptsize
+\begin{verbatim}
+>>> import urllib.robotparser
+>>> rp = urllib.robotparser.RobotFileParser()
+>>> rp.set_url("http://127.0.0.1:8000/robots.txt")
+>>> rp.read()
+>>> rp.can_fetch("Baiduspider", "http://127.0.0.1:8000/")
+False
+>>> rp.can_fetch("Baiduspider", "http://127.0.0.1:8000/article/")
+True
+\end{verbatim}
+	
+\end{frame}
+% section Robots协议 (end)
+\section{License} % (fold)
+\label{sec:License}
+
+
+\begin{frame}[t]{Apache2 License}
+
+A large number of open source projects you find today are GPL Licensed.
+While the GPL has its time and place, it should most certainly not be your
+go-to license for your next open source project.
+
+\end{frame}
+
+
+\begin{frame}[t]{Apache2 License}
+
+A project that is released as GPL cannot be used in any commercial product
+without the product itself also being offered as open source.
+
+
+The MIT, BSD, ISC, and Apache2 licenses are great alternatives to the GPL
+that allow your open-source software to be used freely in proprietary,
+closed-source software.
+
+Requests is released under terms of Apache2 License.
+\end{frame}
+
+
+
+% section License (end)
+\section{Requests: HTTP for Humans} % (fold)
+\label{sec:Requests: HTTP for Humans}
+
+
+
+\begin{frame}[t,fragile]{Requests: HTTP for Humans}
+
+
+    \scriptsize
+
+\begin{verbatim}
+
+
+>>> r = requests.get('https://api.github.com/user', auth=('user', 'pass'))
+>>> r.status_code
+200
+>>> r.headers['content-type']
+'application/json; charset=utf8'
+>>> r.encoding
+'utf-8'
+>>> r.text
+u'{"type":"User"...'
+>>> r.json()
+{u'private_gists': 419, u'total_private_repos': 77, ...}
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+% \begin{frame}[t]{Requests: HTTP for Humans}
+% 
+% See similar code, sans Requests.
+% 
+% \end{frame}
+
+
+
+
+\begin{frame}[t]{User Testimonials}
+
+Microsoft, Google, Amazon, Salesforce, Heroku, DigitalOcean, RedHat, Twitter, Facebook, Instagram, Spotify, \&c all use Requests to query internal HTTPS services.
+
+\end{frame}
+
+
+\begin{frame}[t]{User Testimonials}
+
+Besides, all the cool kids are doing it. Requests is one of the most downloaded Python packages of all time, pulling in over ~1.6 million installations per day!
+
+\end{frame}
+
+% section Requests: HTTP for Humans (end)
+\section{Tutorial} % (fold)
+\label{sec:Tutorial}
+
+\begin{frame}[t,fragile]{发起连接}
+\begin{verbatim}
+import requests
+r = requests.get("http://127.0.0.1:8000")
+print(r.text)
+print(r.encoding)
+print(r.url)
+print(r.status_code)
+\end{verbatim}
+    
+\end{frame}
+
+\begin{frame}[t,fragile]{GET参数}
+    \scriptsize
+    \begin{verbatim}
+import requests
+import json
+payload = {'key1': 'value1', 'key2': 'value2'}
+r = requests.get('http://httpbin.org/get', params=payload)
+result = json.loads(r.text)
+print(result['args'])
+
+    \end{verbatim}
+
+\end{frame}
+\begin{frame}[t,fragile]{编码问题}
+    \begin{verbatim}
+    r = requests.get("http://127.0.0.1:8000")
+    r.encoding = "UTF-8"
+    print(r.text)
+    \end{verbatim}
+\end{frame}
+\begin{frame}[t,fragile]{POST参数}
+    \scriptsize
+    \begin{verbatim}
+>>> r = requests.post('http://httpbin.org/post', data = {'key':'value'})
+    \end{verbatim}
+\end{frame}
+% section Tutorial (end)
+\section{使用正规式} % (fold)
+\label{sec:使用正规式}
+
+\begin{frame}[t]{正规式}
+    \begin{block}
+        {正规式}
+        正则表达式，又称正规表示式、正规表示法、正规表达式、规则表达式、常规表示法（英语：Regular Expression，在代码中常简写为regex、regexp或RE），是计算机科学的一个概念。正则表达式使用单个字符串来描述、匹配一系列匹配某个句法规则的字符串。在很多文本编辑器里，正则表达式通常被用来检索、替换那些匹配某个模式的文本。\footnote{\url{https://zh.wikipedia.org/zh-cn/正则表达式}}
+    \end{block}
+    
+\end{frame}
+\begin{frame}[t,fragile]{正规式}
+	\scriptsize
+    \begin{verbatim}
+>>> import re
+>>> re.findall(r'\bf[a-z]*', 'which foot or hand fell fastest')
+['foot', 'fell', 'fastest']
+>>> re.sub(r'(\b[a-z]+) \1', r'\1', 'cat in the the hat')
+'cat in the hat'
+\end{verbatim}
+    
+\end{frame}
+\begin{frame}[t,fragile]{正规式}
+	\scriptsize
+    \begin{verbatim}
+>>> html = '''\
+<html>
+    <head>
+    </head>
+    <body>
+        <h1>Title</h1>
+        <p> This is a paragraph</p>
+        <table>
+            <tr>
+                <td> <a href='a.html'>link a</a> </td>
+            </tr>
+        </table>
+        <a href='b.html'>link b</a>
+    </body>
+</html>
+'''
+>>> re.findall("href='(.*?)'", html)
+['a.html', 'b.html']
+\end{verbatim}
+    
+\end{frame}
+\begin{frame}
+  \frametitle{匹配字符}
+	\begin{block}
+		{字符模式}
+		\begin{itemize}
+			\item [$\bullet$] [a-zA-Z]匹配某个字符
+			\item [$\bullet$] \^{}和\$匹配首尾
+			\item [$\bullet$] \textbackslash \^{}和\textbackslash \$字面值
+			\item [$\bullet$] .匹配任意字符，\textbackslash .匹配点号
+			\item [$\bullet$] \textbackslash b匹配单词边界
+			\item [$\bullet$] \textbackslash w匹配非空字符
+			\item [$\bullet$] \textbackslash s匹配空格
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{匹配重复}
+	\begin{block}
+		{匹配重复}
+		\begin{itemize}
+			\item *表示任意次数，\textbackslash *表示字面值
+			\item +表示1次或多次，\textbackslash +表示字面值
+			\item *?和+?表示最短匹配
+			\item \{3\}和\{4,6\}表示重复3次和4--6次
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{匹配重复}
+\begin{verbatim}
+>>> import re
+>>> re.match(r'ab*', 'abbbb').group()
+'abbbb'
+
+>>> re.match(r'ab*?', 'abbbb').group()
+'a'
+
+>>> re.match(r'a\d{3,4}', 'a1234567').group()
+'a1234'
+		
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{模式选择}
+\begin{verbatim}
+>>> #使用|表示或，\|表示字面值
+>>> import re
+>>> re.match(r'(abc)|(def)', 'abc').group()
+'abc'
+        
+\end{verbatim}
+
+        
+\end{frame}
+
+\begin{frame}
+  \frametitle{match与findall}
+	\begin{block}
+		{match vs. findall}
+		\begin{itemize}
+			\item match从首字母开始匹配
+			\item 还有个search，与match类似，从任意处开始匹配
+			\item findall匹配所有子串
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{match与findall}
+	\scriptsize
+\begin{verbatim}
+>>> import re
+>>> p = re.compile('\d+')
+>>> txt = '12 drummers drumming, 11 pipers piping, 10 lords a-leaping'
+>>> p.findall(txt)
+['12', '11', '10']
+
+>>> p.match(txt).group()
+'12'
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{分组捕获}
+	\begin{block}
+		{Grouping}
+		\begin{itemize}
+			\item ()表示分组
+			\item \textbackslash 数字进行引用
+
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{分组捕获}
+\begin{verbatim}
+>>> re.match(r'x(\d+) = \1', 'x123 = 123').group()
+'x123 = 123'
+>>> re.match(r'x(\d+) = \1', 'x123 = 123').groups()
+('123',)
+>>> p = re.compile('(a(b)c)d')
+>>> m = p.match('abcd')
+>>> m.group(0)
+'abcd'
+>>> m.group(1)
+'abc'
+>>> m.group(2)
+'b'
+>>> re.findall(r'(.)\1', '明明亮亮蛋蛋')
+['明', '亮', '蛋']
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{正规式的局限}
+	\begin{block}
+        {}
+		\begin{itemize}
+			\item 无法描述复杂结构
+			\item 回顾编译原理，正规式将文本流转化为记号流
+			\item 还需要语法分析和语义分析构造AST
+			\item HTML中仅用href过滤网址可能无法知道在网页中的位置
+			\item 需要构造DOM树
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{DOM树}
+	\includegraphics[width=0.8\linewidth]{dom.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{抽象语法树}
+	\includegraphics[width=0.8\linewidth]{ast.png}
+\end{frame}
+
+% section 使用正规式 (end)
+\end{document}
