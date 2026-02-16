@@ -1,0 +1,847 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{Python基础}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\section{面向对象}
+\label{sec:面向对象}
+\begin{frame}[t]{面向对象}
+	\begin{block}
+		{面向对象三要素}
+		\begin{itemize}
+			\item 封装：点号能点出成员
+			\item 继承：儿子点出父亲成员
+			\item 多态：儿子点出和父亲不同的行为
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{类的声明}
+\begin{verbatim}
+
+
+class ClassName:
+    <statement-1>
+    .
+    .
+    .
+    <statement-N>
+
+
+\end{verbatim}
+	
+\end{frame}
+
+\begin{frame}[t,fragile]{\_\_init\_\_函数}
+\begin{verbatim}
+
+
+def __init__(self):
+    self.data = []
+
+
+\end{verbatim}
+	
+\end{frame}
+
+\begin{frame}[t,fragile]{Class Objects}
+
+
+\begin{verbatim}
+
+
+>>> class Complex:
+...     def __init__(self, realpart, imagpart):
+...         self.r = realpart
+...         self.i = imagpart
+...
+>>> x = Complex(3.0, -4.5)
+>>> x.r, x.i
+(3.0, -4.5)
+
+
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[t,fragile]{成员变量和实例变量}
+
+
+\begin{verbatim}
+
+
+class Dog:
+
+    tricks = []             # mistaken use of a class variable
+
+    def __init__(self, name):
+        self.name = name
+
+    def add_trick(self, trick):
+        self.tricks.append(trick)
+
+>>> d = Dog('Fido')
+>>> e = Dog('Buddy')
+>>> d.add_trick('roll over')
+>>> e.add_trick('play dead')
+>>> d.tricks                # unexpectedly shared by all dogs
+['roll over', 'play dead']
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{Class Objects}
+
+
+\begin{verbatim}
+
+
+class MyClass:
+    """A simple example class"""
+    i = 12345
+
+    def f(self):
+        return 'hello world'
+
+
+\end{verbatim}
+
+
+\end{frame}
+\begin{frame}[t]{实例/类的成员}
+	\begin{itemize}
+		\item 在\_\_init\_\_中用self.初始化的是实例成员
+		\item 在类似C++成员声明处初始化的是类成员（类似静态变量）
+		\item 实例成员可以动态添加和删除
+		\item 必要时用hasattr判断是否包含某成员
+
+	\end{itemize}
+	
+\end{frame}
+\begin{frame}[t]{成员可见性}
+	\begin{block}{成员可见性}
+\begin{itemize}
+	\item 不存在类似C++的私有
+	\item 约定：下划线前缀的是实现细节
+	\item ipython/Jupyter默认不会补全
+	\item 类似*nix下的dotfiles
+\end{itemize}
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t,fragile]{继承}
+\begin{verbatim}
+class A:
+    def foo(self):
+        print("in A::foo")
+
+class B(A):
+    pass
+
+b = B()
+b.foo()
+\end{verbatim}
+	
+\end{frame}
+
+\begin{frame}[t,fragile]{多态}
+\begin{verbatim}
+class A:
+    def foo(self):
+        print("in A::foo")
+
+class B(A):
+    def foo(self):
+        print("in B::foo")
+
+b = B()
+b.foo()
+isinstance(b, B)
+isinstance(b, A)
+\end{verbatim}
+	
+\end{frame}
+
+\begin{frame}[t]{今天就能开始用的小知识}
+在程序设计中，鸭子类型（英语：duck typing）是动态类型的一种风格。在这种风格中，一个对象有效的语义，不是由继承自特定的类或实现特定的接口，而是由"当前方法和属性的集合"决定。这个概念的名字来源于由James Whitcomb Riley提出的鸭子测试，“鸭子测试”可以这样表述：
+\begin{block}{鸭子测试}
+\begin{itemize}
+		\item If it walks like a duck
+		\item It quacks like a duck
+		\item Then it must be a duck
+\end{itemize}
+\end{block}
+“当看到一只鸟走起来像鸭子、游泳起来像鸭子、叫起来也像鸭子，那么这只鸟就可以被称为鸭子。”	\footnote{\url{https://en.wikipedia.org/wiki/Duck_typing}}
+\end{frame}
+
+\begin{frame}[t]{Yet Another 今天就能开始用的小知识}
+\begin{block}{软件工程中的猴子}
+    无限猴子定理（英语：Infinite monkey theorem）：让一只猴子在打字机上随机地按键，当按键时间达到无穷时，几乎必然能够打出任何给定的文字，比如莎士比亚的全套著作\footnote{ Émile Borel. Mécanique Statistique et Irréversibilité. J. Phys. (Paris). Series 5. 1913, 3: 189–196}。
+\end{block}
+\centering
+\includegraphics[width=.4\linewidth]{Monkey-typing.jpg}
+\end{frame}
+
+\begin{frame}[t,fragile]{Monkey Patching}
+
+\begin{verbatim}
+class A:
+    def foo(self):
+        print("in A::foo")
+
+def bar(self):
+    print("in modified foo")
+
+A.foo = bar
+
+a = A()
+a.foo()
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[t,fragile]{Monkey Sort}
+在计算机科学中，Bogo排序（bogo-sort）是个非常低效率的排序算法，通常用在教学或测试。其原理等同将一堆卡片抛起，落在桌上后检查卡片是否已整齐排列好，若非就再抛一次，又称bozo sort、blort sort或猴子排序。其平均时间复杂度是 $O(n \times n!)$，在最坏情况所需时间是无限。它并非一个稳定的算法\footnote{\url{https://en.wikipedia.org/wiki/Bogosort}}。
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{Monkey Test}
+软件测试中的猴子测试是一种通过让用户提供随机输入来检查行为或查看应用程序或系统是否崩溃来测试应用程序或系统的技术。猴子测试通常作为随机自动化单元测试来实现。
+
+\begin{itemize}
+    \item Android Studio中的Monkey
+    \item Netflix的Chaos Monkey随机终止生产中的实例，以确保工程师实施其服务以适应实例故障。
+\end{itemize}
+\centering
+\includegraphics[width=.2\linewidth]{chaos.png}
+
+\end{frame}
+
+\begin{frame}[t,fragile]{多态}
+\begin{verbatim}
+class A:
+    def foo(self):
+        print("in A::foo")
+
+class B(A):
+    def foo(self):
+        print("in B::foo")
+
+class C:
+    def foo(self):
+        print("not subclass of A/B")
+
+def test_class(a):
+    a.foo()
+
+if __name__ == "__main__"
+    a = A()
+    b = B()
+    c = C()
+    test_class(a)
+    test_class(b)
+    test_class(c)
+\end{verbatim}
+	
+\end{frame}
+
+\section{函数式特性}
+\label{sec:函数式特性}
+
+\begin{frame}[t]{函数一等公民}
+	\begin{itemize}
+		\item 可以被存入变数或其他结构
+		\item 可以被作为参数传递给其他函数
+		\item 可以被作为函数的返回值
+		\item 可以在执行期创造，而无需完全在设计期全部写出
+		\item 即使没有被系结至某一名称，也可以存在	
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Lisp}
+	\includegraphics[width=.2\textwidth]{GNU-Guile-logo.png}
+	\includegraphics[width=.4\textwidth]{clojure.png}
+	\includegraphics[width=.13\textwidth]{racket.png}
+	\vspace{1cm}
+
+\begin{minipage}{0.45\linewidth}
+	\scriptsize
+\begin{verbatim}
+(+ 1 2)
+(define (foo bar) (+ bar 1))
+(foo 100)
+(define (fib x)
+    (if (<= x 1)
+        1
+        (+ (fib (- x 1))
+             (fib (- x 2)))))
+(display (fib 10))
+	  
+		
+\end{verbatim}
+\end{minipage}
+\begin{minipage}{0.5\linewidth}
+	\includegraphics[width=\textwidth]{lisp-xkcd.png}
+\end{minipage}
+
+
+\end{frame}
+
+\begin{frame}[t]{Haskell}
+	\begin{itemize}
+		\item 偏学术	
+		\item 号称最纯粹的函数式语言	
+		\item Avoid Success at all Cost
+	\end{itemize}
+	\includegraphics[width=.15\textwidth]{haskell.png}
+	
+\end{frame}
+\begin{frame}[t]{今天就能开始用的小知识}
+	\begin{block}
+		{关于Haskell}
+		\begin{itemize}
+			\item Avoid Success at all Cost, or Avoid "Success at all cost"
+			\item 新加坡总理李显龙（会C/C++）称退休后会学习Haskell \footnote{\url{http://www.pmo.gov.sg/newsroom/transcript-speech-prime-minister-lee-hsien-loong-founders-forum-smart-nation-singapore}}
+		\end{itemize}
+	\end{block}
+	\includegraphics[width=.4\linewidth]{sudoku.png}
+	\includegraphics[width=.4\linewidth]{license.png}
+\end{frame}
+
+\begin{frame}[t]{书籍推荐}
+	\includegraphics[width=.4\linewidth]{haskell.jpg}
+\end{frame}
+
+\begin{frame}[t]{什么是函数式}
+    函数式编程（functional programming）或称函数程序设计，是一种编程典范，它将电脑运算视为数学上的函数计算，并且避免使用程序状态以及易变对象。函数编程语言最重要的基础是$\lambda$演算（lambda calculus）。而且$\lambda$演算的函数可以接受函数当作输入（引数）和输出（传出值）。
+
+    比起命令式编程，函数式编程更加强调程序执行的结果而非执行的过程，倡导利用若干简单的执行单元让计算结果不断渐进，逐层推导复杂的运算，而不是设计一个复杂的执行过程。
+\end{frame}
+
+\begin{frame}[t]{函数式特性}
+    \begin{itemize}
+        \item First-class and higher-order functions
+        \item Pure function
+        \item Recursion
+        \item Type system
+				\item \ldots
+
+            
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{$\lambda$演算}
+    $\lambda$演算（英语：lambda calculus，$\lambda$-calculus）是一套从数学逻辑中发展，以变量绑定和替换的规则，来研究函数如何抽象化定义、函数如何被应用以及递归的形式系统。它由数学家阿隆佐·邱奇在20世纪30年代首次发表。Lambda演算作为一种广泛用途的计算模型，可以清晰地定义什么是一个可计算函数，而任何可计算函数都能以这种形式表达和求值，它能模拟单一磁带图灵机的计算过程；尽管如此，Lambda演算强调的是变换规则的运用，而非实现它们的具体机器。
+\end{frame}
+
+\begin{frame}[t,fragile]{$\lambda$表达式}
+\begin{verbatim}
+inc = lambda x: x + 1
+
+add = lambda x, y: x + y
+
+inc(5)
+add(10, 20)
+
+# 注意：Python的lambda表达式不能换行
+
+
+\end{verbatim}
+	
+\end{frame}
+
+\subsection{Closure}
+\label{sub:Closure}
+\begin{frame}[t,fragile]{闭包}
+    
+\begin{verbatim}
+def outer():
+    count = 0
+    def inner():
+        nonlocal count
+        count += 1
+        return count
+    return inner
+>>> counter = outer()
+>>> counter
+<function __main__.outer.<locals>.inner()>
+>>> counter()
+1
+>>> counter()
+2
+
+\end{verbatim}
+\end{frame}
+
+\subsection{Partial Function}
+\label{sub:Partial Function}
+\begin{frame}[t,fragile]{偏函数}
+
+\begin{verbatim}
+
+from functools import partial
+def multiply(x, y):
+    return x * y
+
+>>> double = partial(multiply, 2)
+>>> triple = partial(multiply, 3)
+>>> double
+functools.partial(<function multiply at 0x7f79bcf27f28>, 2)
+>>> type(double)
+functools.partial
+>>> double(5)
+10
+>>>triple(20)
+60
+
+\end{verbatim}
+    
+\end{frame}
+
+\subsection{List Comprehension} % (fold)
+\label{sub:List Comprehension}
+
+\begin{frame}[t,fragile]
+  \frametitle{列表推导}
+	\begin{verbatim}
+[i * 2 for i in range(10)]
+
+[i * 2 for i in range(10) if i % 2 == 0]
+
+colours = ["red", "green", "yellow", "blue"]
+things = ["house", "car", "tree"]
+combined =  [(x,y) for x in colours for y in things]
+\end{verbatim}
+	
+\end{frame}
+% subsection List Comprehension (end)
+\subsection{Map-Reduce} % (fold)
+\label{sub:Map-Reduce}
+
+\begin{frame}[t,fragile]{Map/Filter/Reduce}
+\begin{verbatim}
+
+from functools import reduce
+map(lambda x: x ** 2, range(10)
+list(map(lambda x: x **2, range(10))
+
+filter(lambda x: x % 2 == 0, 
+         map(lambda x: x ** 2, range(10)))
+
+reduce(lambda x, y: x + y,
+         filter(lambda x: x % 2 == 0, 
+                  map(lambda x: x ** 2, range(10))))
+         
+\end{verbatim}
+
+	
+\end{frame}
+% subsection Map-Reduce (end)
+
+% section 函数式特性 (end)
+\section{一点更多的数据结构}
+\label{sec:一点更多的数据结构}
+
+\subsection{元组}
+\label{ssub:元组}
+
+\begin{frame}[t]{Tuples and Sequences}
+
+    \begin{itemize}
+        \item 元组与列表类似，都是线性数据结构
+        \item 元组由逗号分割的数据构成
+        \item 元组内容不可变
+        \item 元组可以嵌套
+    \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{Tuples and Sequences}
+
+    \scriptsize
+
+\begin{verbatim}
+
+
+>>> t = 12345, 54321, 'hello!'
+>>> t[0]
+12345
+>>> t
+(12345, 54321, 'hello!')
+>>> # Tuples may be nested:
+... u = t, (1, 2, 3, 4, 5)
+>>> u
+((12345, 54321, 'hello!'), (1, 2, 3, 4, 5))
+>>> # Tuples are immutable:
+... t[0] = 88888
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+>>> # but they can contain mutable objects:
+... v = ([1, 2, 3], [3, 2, 1])
+>>> v
+([1, 2, 3], [3, 2, 1])
+
+
+\end{verbatim}
+\end{frame}
+
+
+
+
+
+\begin{frame}[t]{Tuples and Sequences}
+
+    \begin{itemize}
+        \item 构造空列表使用()
+        \item 构造单元素列表用(a,)
+        \item 如果元组元素是可变的，则可以修改（有坑）
+        \item 元组也可出现在赋值左部（lhs）
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Tuples and Sequences}
+
+
+\begin{verbatim}
+
+
+>>> empty = ()
+>>> singleton = 'hello',    # <-- note trailing comma
+>>> len(empty)
+0
+>>> len(singleton)
+1
+>>> singleton
+('hello',)
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{Tuples and Sequences}
+
+
+    \scriptsize
+\begin{verbatim}
+>>> x, y, z = t
+>>> x, y = y, x
+
+>>> x = (1, 2, 3, [4, 5])
+>>> x[3] += [6]
+---------------------------------------------------------------------------
+TypeError                Traceback (most recent call last)
+<ipython-input-34-1b7fadc4e686> in <module>()
+----> 1 x[3] += [6]
+
+TypeError: 'tuple' object does not support item assignment
+
+>>> x
+(1, 2, 3, [4, 5, 6])
+
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\subsection{字典}
+\label{sub:字典}
+
+\begin{frame}[t]{Dictionaries}
+
+    \begin{itemize}
+        \item 字典类似其他语言中散列表、关联数组，按键值方式组织
+        \item 不像列表元组可以用下标随机访问
+        \item 任何不可变对象均可作为键（元组亦可，但不能包含可变元素）
+        \item 空字典用\{\}构造；非空字典在\{\}内逗号分割的键:值对表示
+        \item list(d.keys())返回所有键。如需有序，使用sorted(d.keys())
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[t,fragile]{Dictionaries}
+
+
+    \scriptsize
+\begin{verbatim}
+>>> tel = {'jack': 4098, 'sape': 4139}
+>>> tel['guido'] = 4127
+>>> tel
+{'sape': 4139, 'guido': 4127, 'jack': 4098}
+>>> tel['jack']
+4098
+>>> del tel['sape']
+>>> tel['irv'] = 4127
+>>> tel
+{'guido': 4127, 'irv': 4127, 'jack': 4098}
+>>> list(tel.keys())
+['irv', 'guido', 'jack']
+>>> sorted(tel.keys())
+['guido', 'irv', 'jack']
+>>> 'guido' in tel
+True
+>>> 'jack' not in tel
+False
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{Dictionaries}
+
+
+\begin{verbatim}
+
+>>> x = {}
+>>> x[(1, 2, 3)] = 4
+>>> x[(1, 2, [3, 4])] = 5
+>>> x[(1, 2, 3, [4, 5])] = 6
+---------------------------------------------------------------------------
+TypeError       Traceback (most recent call last)
+<ipython-input-8-7e134042fef1> in <module>()
+----> 1 x[(1, 2, 3, [4, 5])] = 6
+
+TypeError: unhashable type: 'list'
+
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t]{Dictionaries}
+
+    \begin{itemize}
+        \item 字典还可以由二元组列表初始化
+        \item 字典推导与列表推导类似
+        \item 字典键为字符串时，可以用关键字参数设定
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Dictionaries}
+
+
+\begin{verbatim}
+
+
+>>> dict([('sape', 4139), 
+          ('guido', 4127), 
+          ('jack', 4098)])
+{'sape': 4139, 'jack': 4098, 'guido': 4127}
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{Dictionaries}
+
+
+\begin{verbatim}
+
+
+>>> {x: x**2 for x in (2, 4, 6)}
+{2: 4, 4: 16, 6: 36}
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{Dictionaries}
+
+
+\begin{verbatim}
+
+
+>>> dict(sape=4139, guido=4127, jack=4098)
+{'sape': 4139, 'jack': 4098, 'guido': 4127}
+
+
+\end{verbatim}
+
+
+\end{frame}
+\subsection{集合}
+\label{ssub:集合}
+
+\begin{frame}[t]{Sets}
+
+    \begin{itemize}
+        \item 集合是无序无重复的数据结构
+        \item 支持成员测试、添加、删除等操作
+        \item 支持交集、并集、差等集合操作
+        \item 初始化用\{\}括住的逗号分割元素序列
+        \item 空集合用set()，而不是\{\}
+        \item 集合推导同样支持
+   \end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{Sets}
+    \scriptsize
+\begin{verbatim}
+>>> basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
+>>> print(basket)                      # show that duplicates have been removed
+{'orange', 'banana', 'pear', 'apple'}
+>>> 'orange' in basket                 # fast membership testing
+True
+>>> 'crabgrass' in basket
+False
+
+>>> # Demonstrate set operations on unique letters from two words
+...
+>>> a = set('abracadabra')
+>>> b = set('alacazam')
+>>> a                                  # unique letters in a
+{'a', 'r', 'b', 'c', 'd'}
+>>> a - b                              # letters in a but not in b
+{'r', 'd', 'b'}
+>>> a | b                              # letters in a or b or both
+{'a', 'c', 'r', 'd', 'b', 'm', 'z', 'l'}
+>>> a & b                              # letters in both a and b
+{'a', 'c'}
+>>> a ^ b                              # letters in a or b but not both
+{'r', 'd', 'b', 'm', 'z', 'l'}
+
+
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Sets}
+
+
+\begin{verbatim}
+
+
+>>> a = {x for x in 'abracadabra' if x not in 'abc'}
+>>> a
+{'r', 'd'}
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\end{document}
