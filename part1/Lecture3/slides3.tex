@@ -1,0 +1,713 @@
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{biblatex}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\bibliography{cite}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+\raggedright
+
+\let\oldfootnotesize\footnotesize
+\renewcommand*{\footnotesize}{\oldfootnotesize\tiny}
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{开源软件仓库与典型软件仓库结构}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open Source}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\begin{frame}
+  \frametitle{温故知新}
+	\begin{block}
+		{}
+		\begin{itemize}
+			\item 开源软件许可证制度
+				\begin{itemize}
+					\item GPL、BSD、MIT等许可证协议
+					\item 许可证典型案例
+				\end{itemize}
+			\item 开源软件生态系统
+				\begin{itemize}
+					\item 全栈
+					\item 开源软件生态系统典型例子
+				\end{itemize}
+		\end{itemize}
+	\end{block}
+\end{frame}
+\section{开源软件仓库介绍}
+\begin{frame}[t]{软件仓库}
+	\begin{block}{定义}
+A software repository is a storage location from which software packages may be retrieved and installed on a computer.
+
+Many software publishers and other organizations maintain servers on the Internet for this purpose, either free of charge or for a subscription fee. Repositories may be solely for particular programs, such as CPAN for the Perl programming language, or for an entire operating system\footnote{\url{https://en.wikipedia.org/wiki/Software\_repository}}. 
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{典型软件仓库}
+	\begin{block}{软件仓库分类}
+\begin{itemize}
+	\item 操作系统发行版：基于某种内核的操作系统及外围软件构成的完整系统，如Debian、Fedora等GNU/Linux发行版，或FreeBSD、OpenBSD等BSD发行版
+	\item 特定语言仓库：提供针对某个语言的软件包/类库等，如Perl的CPAN、R的CRAN、\TeX{}的CTAN、C++的boost等
+\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{软件仓库}
+	\begin{block}{软件仓库的操作}
+		用户通过包管理器与软件仓库进行交互，功能包括搜索、安装、卸载、升级等功能。例如Debian及其衍生发行版的包管理器APT（Advanced Packaging Tool）、Red Hat及其衍生发行版的yum、Arch Linux的Pacman等等。
+%Operators of such repositories typically provide a package management system, tools intended to search for, install and otherwise manipulate software packages from the repositories. For example, many Linux distributions use Advanced Packaging Tool (APT), commonly found in Debian based distributions, or yum found in Red Hat based distributions. There are also multiple independent package management systems, such as pacman, used in Arch Linux and equo, found in Sabayon Linux.
+	\end{block}
+\end{frame}
+\begin{frame}[t,fragile]{今天就能开始用的小知识}
+	\begin{block}{APT梗}
+	\scriptsize
+	\begin{verbatim}
+$apt moo
+                 (__) 
+                 (oo) 
+           /------\/ 
+          / |    ||   
+         *  /\---/\ 
+            ~~   ~~   
+..."Have you mooed today?"...
+$ LC_ALL=C apt |tail -n 1
+                                        This APT has Super Cow Powers.
+$ apt |tail -n 1
+                                         本 APT 具有超级牛力。
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[t]{软件仓库分类}
+    \begin{block}
+        {按类型分}
+        \begin{itemize}
+            \item 综合类：如Apache、Mozilla等基金会主导的仓库
+            \item 针对特定语言：如CRAN、CPAN、Pypi
+        \end{itemize}
+    \end{block}
+    \begin{block}
+        {按粒度分}
+        \begin{itemize}
+            \item 微观：Pypi中的某个包、Apache下的子项目
+            \item 宏观：GNU/Linux发行版，如Debian、Ubuntu
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{微观开源软件仓库}
+	微观角度，针对某个特定功能的软件所对应的所有信息，组织在一起构成的软件仓库，一般包括的信息包括：
+	\begin{itemize}
+		\item 源代码
+		\item 构建脚本，如Makefile、build.xml等
+		\item 帮助文档
+		\item 版本信息：如.git/，.hg/内用于版本控制的信息
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{以Python仓库为例}
+	\includegraphics[width=0.9\textwidth]{python.png}
+	
+\end{frame}
+
+\begin{frame}[t]{宏观开源软件仓库（Linux发行版为例）}
+	\centering
+	%placeholder for timeline
+	\includegraphics[width=0.25\textwidth,angle=90]{distro-timeline.png}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{Debian}
+		Debian是完全由自由软件组成的类UNIX操作系统，其包含的多数软件使用GNU通用公共许可协议授权，并由Debian计划的参与者组成团队对其进行打包、开发与维护。
+
+Debian项目最初由伊恩·默多克于1993年发起，Debian 0.01版在1993年9月15日发布，而其第一个稳定版本则在1996年发布。\footnote{\url{https://zh.wikipedia.org/zh-cn/Debian}}
+
+	\end{block}
+		\centering
+		\includegraphics[width=0.4\textwidth]{debian.png}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{Debian的特色}
+Debian以其坚守Unix和自由软件的精神，以及其给予用户的众多选择而闻名。现时Debian提供了超过25,000个软件，超过50,000个软件包，并正式支持10个计算机系统结构。
+
+作为一个大的系统组织框架，Debian旗下有多种不同操作系统核心的分支计划，主要为采用Linux核心的Debian GNU/Linux系统，其他还有采用GNU Hurd核心的Debian GNU/Hurd系统、采用FreeBSD核心的Debian GNU/kFreeBSD系统等。众多知名的Linux发行版，例如Ubuntu、Knoppix和Deepin，也都建基于Debian GNU/Linux。
+
+	\end{block}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{今天就能开始用的小知识}
+		\begin{itemize}
+			\item Debian名字来源于发起人Ian Murdock和当时的女友Debra Lynn
+			\item Debian的版本号昵称来自玩具总动员
+			\item Debian的logo来自玩具总动员角色巴斯光年的胡子（存疑）%\footfullcite{krafft2005debian}
+		\end{itemize}
+\end{block}
+\begin{minipage}{.5\textwidth}
+	\centering
+	\includegraphics[width=0.4\textwidth]{buzz.jpg}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+	\centering
+	\includegraphics[width=0.2\textwidth]{officiallogo-100.jpg}
+\end{minipage}
+\end{frame}
+\begin{frame}[t]{Debian}
+    \centering
+	\includegraphics[width=0.7\textwidth]{debian-toystory.jpg}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{Ubuntu}
+		\begin{itemize}
+			\item Ubuntu是以桌面应用为主的Linux发行版，Ubuntu由Canonical公司发布，他们提供商业支持。它是基于自由软件，其名称来自非洲南部祖鲁语或科萨语的ubuntu一词，意思是``人性''、``我的存在是因为大家的存在''，是非洲传统的一种价值观。
+			\item Ubuntu在Ubuntu 12.04的发布页面上使用了``友帮拓''作为官方译名。
+		\end{itemize}
+	\end{block}
+		\centering
+		\includegraphics[width=0.25\textwidth]{ubuntu.png}
+\end{frame}
+\begin{frame}[t]{Ubuntu}
+	\begin{block}
+		{今天就能开始使用的小知识}
+		Ubuntu的发行代码规律
+
+		\footnotesize
+		\begin{tabular}{lll}
+4.10     	&  Warty Warthog         	&  多疣的疣猪         	\\
+5.04     	&  Hoary Hedgehog        	&  白发的刺猬         	\\
+5.10     	&  Breezy Badger         	&  活泼的獾           	\\
+6.06LTS  	&  Dapper Drake          	&  整洁的公鸭         	\\
+6.10     	&  Edgy Eft              	&  尖利的小蜥蜴       	\\
+7.04     	&  Feisty Fawn           	&  烦躁不安的鹿       	\\
+7.10     	&  Gutsy Gibbon          	&  胆大的长臂猿       	\\
+8.04LTS  	&  Hardy Heron           	&  坚强的鹭           	\\
+8.10     	&  Intrepid Ibex         	&  无畏的羱羊         	\\
+9.04     	&  Jaunty Jackalope      	&  活泼的鹿角兔       	\\
+9.10     	&  Karmic Koala          	&  幸运的树袋熊       	\\
+10.04LTS 	&  Lucid Lynx            	&  清醒的山猫         	\\
+10.10    	&  Maverick Meerkat      	&  标新立异的狐獴     	\\
+11.04    	&  Natty Narwhal         	&  敏捷的独角鲸       	\\
+11.10    	&  Oneiric Ocelot        	&  有梦的虎猫         	\\
+12.04LTS 	&  Precise Pangolin      	&  精准的穿山甲       	\\
+12.10    	&  Quantal Quetzal       	&  量子的格查尔鸟     	\\
+13.04    	&  Raring Ringtail       	&  铆足了劲的环尾猫熊 	\\
+13.10    	&  Saucy Salamander      	&  活泼的蝾螈         	\\
+\end{tabular}
+\end{block}
+\end{frame}
+\begin{frame}[t]{Ubuntu}
+	\begin{block}
+		{今天就能开始使用的小知识}
+		Ubuntu的发行代码规律
+
+		\footnotesize
+		\begin{tabular}{lll}
+14.04LTS  & Trusty Tahr       & 可靠的塔尔羊       \\
+14.10     & Utopic Unicorn    & 乌托邦的独角兽     \\
+15.04     & Vivid Vervet      & 活泼的长尾黑颚猴   \\
+15.10     & Wily Werewolf     & 老谋深算的狼人     \\
+16.04LTS  & Xenial Xerus      & 好客的非洲地松鼠   \\
+16.10     & Yakkety Yak       & 喋喋不休的牦牛     \\
+17.04     & Zesty Zapus       & 热情的美洲林跳鼠   \\
+17.10     & Artful Aardvark   & 巧妙的土豚         \\
+18.04LTS  & Bionic Beaver     & 仿生的海狸         \\
+18.10     & Cosmic Cuttlefish & 宇宙的墨鱼         \\
+19.04     & Disco Dingo       & 迪斯可的澳洲野犬   \\
+19.10     & Eoan Ermine       & 黎明的白鼬         \\
+20.04 LTS & Focal Fossa       & 焦点的马岛长尾狸猫 \\
+20.10     & Groovy Gorilla    & 时髦的大猩猩       \\
+21.04     & Hirsute Hippo     & 多毛的河马         \\
+21.10     & Impish Indri      & 顽皮的大狐猴       \\
+22.04 LTS & Jammy Jellyfish   & 适意的水母         \\
+22.10     & Kinetic Kudu      & 活跃的扭角林羚     \\
+23.04     & Lunar Lobster     & 月球龙虾           \\
+23.10     & Mantic Minotau    & 预言的牛头人       \\
+24.04 LTS & Noble Numbat      & 高贵的袋食蚁兽     \\
+24.10     & Oracular Oriole   & 神谕黄鹂           \\
+		\end{tabular}
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{ArchLinux}
+        Arch Linux是朝向轻量以及简单的Linux发行版。其中“简单”被定义为“避免不必要或复杂的修改”，也就是说，是由开发者角度定义，而非用户角度思考。\footnote{\url{https://zh.wikipedia.org/zh-cn/Arch_Linux}}
+        \scriptsize
+        \begin{itemize}
+            \item 简洁：避免任何不必要的添加、修改和复杂增加。
+\item 现代：尽全力保持软件处于最新的稳定版本，采用滚动升级策略，安装之后可以持续升级。
+\item 实用：开发者依赖基于事实的技术分析和讨论，避免政治因素，不会被流行观点左右。仓库中既提供了开源、自由的软件，也提供了闭源软件。实用性大于意识形态。
+\item 以用户为中心：Arch Linux 适用于乐于自己动手的用户，他们愿意花时间阅读文档，解决自己的问题。
+        \end{itemize}
+	\end{block}
+		\centering
+		\includegraphics[width=0.2\textwidth]{archlinux.png}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{Red Hat}
+Red Hat Linux是由Red Hat公司发行的一个Linux发行包。其1.0版本于1994年11月3日发行。虽然其历史不及Slackware般悠久，但比起很多的Linux发行包，Red Hat的历史悠久得多。Red Hat Linux中的RPM软件包格式可以说是Linux社区的一个事实标准，被广泛使用于其他Linux发行包中。
+
+	\end{block}
+		\centering
+		\includegraphics[width=0.2\textwidth]{redhat.jpg}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{Fedora}
+Fedora Linux是较具知名度的Linux发行包之一，由Fedora项目社区开发、红帽公司赞助，目标是创建一套新颖、多功能并且自由（开放源代码）的操作系统。
+
+Fedora对于用户而言，是一套功能完备、更新快速的免费操作系统；而对赞助者Red Hat公司而言，它是许多新技术的测试平台，被认为可用的技术最终会加入到Red Hat Enterprise Linux中。\footnote{\url{https://zh.wikipedia.org/zh-cn/Fedora}}
+	\end{block}
+    \begin{minipage}
+        {0.5\textwidth}
+		\includegraphics[width=0.5\textwidth]{fedora.jpg}
+    \end{minipage}
+    \begin{minipage}
+        {0.5\textwidth}
+		\includegraphics[width=0.5\textwidth]{Hat-Fedora.jpg}
+    \end{minipage}
+\end{frame}
+\begin{frame}[t]{典型Linux发行版}
+	\begin{block}{Gentoo}
+Gentoo Linux是一种Linux操作系统，基于Portage包管理系统，而拥有几乎无限制的适应性特性，被官方称作元发行版（meta-distribution），支持多达10种以上的电脑系统结构平台。此项目和它的产品以巴布亚企鹅命名。Gentoo包管理系统的设计是模块化、可移植、易维护、灵活以及针对用户机器优化的。
+	\end{block}
+		\centering
+		\includegraphics[width=0.25\textwidth]{gentoo.png}
+\end{frame}
+\begin{frame}[t]{特定语言仓库}
+    \begin{block}{Pypi}
+PyPI(Python Package Index)是python官方的第三方库的仓库，所有人都可以下载第三方库或上传自己开发的库到PyPI。PyPI推荐使用pip包管理器来下载第三方库。\footnote{\url{http://kgullikson88.github.io/blog/pypi-analysis.html}}
+	\end{block}
+	\includegraphics[width=0.35\textwidth]{pypi2.png}
+\end{frame}
+\begin{frame}[t]{特定语言仓库}
+	\begin{block}{CRAN}
+        \scriptsize
+		NASAC 2017 Keynote: Knowledge Flows in Open Source Software Supply Chains
+		-- Audris Mockus
+	\end{block}
+	\includegraphics[width=0.5\textwidth]{r.png}
+\end{frame}
+\begin{frame}[t]{特定语言仓库}
+	\begin{block}{CPAN}
+\url{http://mapofcpan.org/}
+	\end{block}
+	\centering
+	\includegraphics[width=0.8\textwidth]{map-of-cpan.png}
+\end{frame}
+\section{开源软件仓库结构}
+\begin{frame}[t]{以Debian为例}
+	\begin{block}{Debian的基本结构}
+	\begin{block}{涵盖的内容}
+		\begin{itemize}
+			\item Debian软件类型
+			\item Debian仓库结构
+			\item Debian发布周期
+			\item Debian发布流程
+			\item Debian依赖管理
+			\item Debian缺陷管理
+		\end{itemize}
+
+	\end{block}
+
+	\end{block}
+	
+\end{frame}
+
+\begin{frame}[t]{Debian软件类型}
+    \begin{block}{Debian社群契约\footnote{\url{https://www.debian.org/social_contract.zh-cn.html}}}
+        \begin{enumerate}
+            \item Debian 将始终是 100\% 的自由软件
+            \item 我们将回报自由软件社群
+            \item 我们绝不隐瞒问题
+            \item 我们将优先考虑我们的用户及自由软件
+            \item 哪些作品不符合我们的自由软件规范
+        \end{enumerate}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{Debian软件类型}
+	\begin{block}{Debian 将始终是 100\% 的自由软件}
+    我们制订一个名为"Debian 自由软件指导方针"的标准便于我 们判定某项作品"自由"与否。我们保证 Debian 系统机器附带的软件包遵循这些自由软件的方针。我们将同时支持在 Debian 上开 发及使用自由或者非自由软件的用户。但是，我们决不让这个系统依赖于任何非自 由软件。
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+	\begin{block}{我们将回报自由软件社群}
+
+    当我们编写 Debian 系统的新的部件之时，我们将使其遵循 Debian 自由软件指导 方针的理念。我们将尽最大努力，打造最优秀的系统，以 利自由软件得到最广泛的使用及传播。我们将反馈那些作品被 我们系统收录的"上游"作者，例如缺陷的修正 、改良的意见以及用户的需求等这些信息。
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+	\begin{block}{我们绝不隐瞒问题}
+
+    我们将始终把我们整个的缺陷报告数据库开放给公众阅读。 由用户在线提交的报告，将会很快的出现在其他人的眼前。
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+	\begin{block}{我们将优先考虑我们的用户及自由软件}
+    我们由我们的用户及自由软件社群的需要所导向。我们将优先考虑他们的利益。我 们将在多种计算环境中支持我们的用户的操作需要。我们不反对在 Debian 系统上 使用非自由软件，我们也不会尝试向创建和使用这部分软件的用户索取费用。我们 允许他人，在没有我们的资金的参与下，制造包括 Debian 以及商业软件的增值套 件。为了达成这些目标，我们将提供一集成的、高质量的、100\% 自由的软件，而 不附加任何可能阻止在这些方面使用的法律限制。
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+	\begin{block}{哪些作品不符合我们的自由软件规范}
+    我们明了，某些我们的用户需要使用不符合 Debian 自由软件指导方针的作品。 我们为这些作品，在我们的 FTP 库中留出了"contrib"以及 "non-free"目录。在这些目录下的软件包，并不属于 Debian 系统 尽管它们已被配置成可以在 Debian 下使用。我们鼓励光盘制造商阅读这些目录下 的软件的许可证，以判断他们是否可以在光盘中发行这些软件 。所以，尽管非自由软件并非 Debian 系统的一部分，我们仍支持它们的使用，并 且我们为非自由软件提供了公共资源 (诸如我们的缺陷跟踪系统以及邮件列表)。
+	\end{block}
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+    \begin{block}
+        \scriptsize
+        {Debian 自由软件指导方针 (DFSG)}
+\begin{itemize}
+    \item 自由的再次发行
+
+    Debian 组件的许可证不得限制任何一方将此软件作为含有 若干不同来源的程序的一套软件集合中的一个组件 用于销售或者捐赠。该许可证不得向诸如此类销售行为的销售方索取 专利费或者其它费用。
+
+    \item 源代码
+
+    程序必须包括源代码，而且必须允许以源代码以及预先编译好的形式发行 。
+
+\item 作品的衍生
+
+    许可证必须允许对其所属作品的修改以及衍生，而且必须允许这些作品在原始 软件的许可证条款下发行。
+\end{itemize}
+\end{block}
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+    \begin{block}
+        \scriptsize
+        {Debian 自由软件指导方针 (DFSG)}
+\begin{itemize}
+
+\item 作者源代码的完整性
+
+    许可证只有在允许"补丁文件"随其所属作品的源代码一同发行，以便在编译时修改程序 的情况之下，方可限制对其所属作品的源代码在发行时的修改行为。 许可证必须清楚表明用已修改的源代码编译而成的软件，是允许发行的。 许可证可要求衍生软件使用有别于原来软件的名称或者版本号。( 这是一种妥协，Debian 组织鼓励所有作者不要限制任何源代码文件或者二进制文件的修改。)
+
+\item 禁止歧视人士或者组织
+
+    许可证不能歧视任何人士或者由多人组成的组织。
+
+\item 禁止歧视用途
+
+    许可证不能歧视程序可以被用于的任何特定领域。例如， 许可证不得限制程序用于商业或者基因研究。
+\end{itemize}
+\end{block}
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+    \begin{block}
+        \scriptsize
+        {Debian 自由软件指导方针 (DFSG)}
+\begin{itemize}
+
+\item 许可证的发行
+
+    程序附带的权利必须适用于程序再次 发行的每一个受众，无需他们再执行一个附加的许可证。
+
+\item 许可证不能特定于 Debian
+
+    程序附带的权利不能由该程序是否为 Debian 的一部分来决定。如果这个程序从 Debian 中摘取出 来，即使在 Debian 之外但仍然在该程序的许可证条款下使用 或者发行，那么它再次发行的每一个受众都将拥有和那些在该 程序与 Debian 系统结合时被授予的完全相同的权利。
+
+\item 许可证的规定不得污染其他软件
+
+    许可证不得对其他与此软件一同分发的软件作出任何限制的规定。例如，许可 证不得要求所有与它在同一媒体中一同分发的软件都是自由软件。
+
+\end{itemize}
+\end{block}
+\end{frame}
+\begin{frame}[t]{Debian软件类型}
+    \begin{block}
+        \scriptsize
+        {Debian 自由软件指导方针 (DFSG)}
+\begin{itemize}
+\item 许可证示例
+
+    "GPL"、 "BSD" 和 "Artistic" 均是我们视为"自由"的许可证的示例。
+
+我们"与自由软件社群订立"社群契约""的这个概念是由 Ean Schuessler 提出的。本文是由 Bruce Perens 写成初稿，并由其他 Debian 开发者在 1997 年 6 月起长达一个月的电子邮件会议中精炼而成。后来被 收录 作为 Debian 项目所公布的政策。
+
+此后，Bruce Perens 从 Debian 自由软件指导方针中删除特别提到 Debian 的部份，制成了 "开放源码定义"。
+
+欢迎其他组织以这份文档为基础进行衍生和扩写。若您这样做，请注明原文出处 "Debian 计划"，以表达对我们工作的赞赏和肯定。
+\end{itemize}
+    \end{block}
+    
+\end{frame}
+
+\begin{frame}[t]{Debian仓库结构}
+	\includegraphics[width=0.7\textwidth]{debian-dir.png}
+	
+\end{frame}
+
+\begin{frame}[t]{Debian发布周期}
+	\begin{block}{Debian的发布周期}
+Debian主要分三个版本：稳定版本（stable）、测试版本（testing）、不稳定版本（unstable）。 目前的稳定版本为Debian Buster，上一个稳定版本是 Stretch，不稳定版本永远为Debian sid。
+
+Debian 稳定版通常每隔两年发布一个版本，自发行后会得到为期约三年的正式支持，期间会不定期得到小版本更新与持续的安全更新以修复发现的重要问题。
+
+自Debian 6开始，Debian开始了长期支持计划，在每个稳定版三年支持期结束后由长期支持团队提供额外的两年安全更新支持，但不会发布小版本。故目前的稳定版可以得到总计五年的安全更新支持。
+
+	\end{block}
+	
+\end{frame}
+
+\begin{frame}[c]{Debian发布周期}
+
+    \centering
+    \includegraphics[height=0.4\textheight]{ts-2-buster-and-slinky.jpg}
+
+    Buster
+    
+\end{frame}
+
+\begin{frame}[c]{Debian发布周期}
+
+    \centering
+    \includegraphics[height=0.4\textheight]{bookworm.jpg}
+
+    Bookworm
+    
+\end{frame}
+\begin{frame}[c]{Debian发布周期}
+
+    \centering
+    \includegraphics[height=0.4\textheight]{sid.jpg}
+
+    Sid
+    
+\end{frame}
+\begin{frame}[t]{Debian发布周期}
+    \centering
+	\includegraphics[width=0.8\textwidth]{debian-timeline.png}
+	
+\end{frame}
+
+\begin{frame}[t]{Debian发布流程}
+	\begin{block}{Debian的发布流程}
+正在开发中的软件会被上传到名为“不稳定”（unstable，代号sid）和“实验性”（experimental）的项目分支上。上传至“不稳定”分支上的软件通常是由软件的原开发者发布的稳定版本，但包含了一些未经测试的Debian内部的修改（例如软件的打包）。而未达到“不稳定”分支要求的软件会被置于“实验性”分支。
+
+一套软件在置于“不稳定”分支一段时间后（关乎软件修改的紧急性），该软件会自动被移至“测试”分支。但如果软件有严重错误被报告，或其所依存的软件未合乎“测试”分支的要求，该软件则不会被移至“测试”分支。
+
+当在“测试”分支中的软件Bug总数低于一特定数量后，“测试”分支会成为下一个稳定版本。
+
+	\end{block}
+	
+\end{frame}
+
+\begin{frame}[t]{Debian发布流程}
+	\includegraphics[width=0.8\textwidth]{debian-package-cycle.png}
+	
+\end{frame}
+\begin{frame}[t,fragile]{Debian依赖管理}
+	\begin{block}{Debian的依赖管理}
+		\scriptsize
+		\begin{verbatim}
+$debtree nano | dot -Tpng > nano.png
+digraph "nano" {
+  rankdir=LR;
+  node [shape=box];
+  "nano" -> "libncursesw5" [color=blue,label="(>= 6)"];
+  "libncursesw5" -> "libtinfo5" [color=blue,label="(= 6.0+20170902-1)"];
+  "libncursesw5" -> "libgpm2";
+  "nano" -> "libtinfo5" [color=blue,label="(>= 6)"];
+  "nano" -> "pico" [color=red];
+  "nano" [style="setlinewidth(2)"]
+  "pico" [style=filled,fillcolor=oldlace];
+}
+// Excluded dependencies:
+// libc6 zlib1g
+// total size of all shown packages: 3093504
+// download size of all shown packages: 976236
+\end{verbatim}
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t,fragile]{Debian依赖管理}
+	\begin{minipage}{0.5\textwidth}
+		\scriptsize
+\begin{verbatim}
+Package: nano
+Priority: standard
+Section: editors
+Installed-Size: 716
+Architecture: amd64
+Version: 2.6.3-1
+Replaces: pico
+Provides: editor
+Depends: libc6 (>= 2.14), libncursesw5 (>= 6), libtinfo5 (>= 6)
+Suggests: spell
+Conflicts: pico
+Description-en: small, friendly text editor inspired by Pico
+ GNU nano is an easy-to-use text editor originally designed 
+ as a replacement for Pico, the ncurses-based editor from 
+the non-free mailer package Pine (itself now available under 
+the Apache License as Alpine).
+\end{verbatim}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth}
+		\vspace{-1in}
+	\includegraphics[width=0.8\textwidth]{nano.png}
+	\end{minipage}
+	
+\end{frame}
+\begin{frame}[t]{Debian依赖管理}
+	%placeholder for vim
+	\includegraphics[width=0.8\textwidth]{vim.png}
+	
+\end{frame}
+
+\begin{frame}[t]{Debian依赖管理}
+	\begin{minipage}
+		{0.5\textwidth}
+		Debian软件包的安装、升级和卸载可以建模为经典的可满足问题（Satisfiability），并且是多目标问题，如最小化安装文件数、最小化无法升级软件数、最小化新软件包个数等等。这些目标之间可能存在冲突。
+	\end{minipage}
+	\begin{minipage}
+		{0.5\textwidth}
+		\includegraphics[width=\textwidth]{framework.png}
+	\end{minipage}\footnote{Zhilei Ren, He Jiang, Jifeng Xuan, Yan Hu. Analyzing Inter-objective Relationships: A Case Study of Software Upgradability. Proceedings of PPSN 2016, Edinburgh, Scotland, UK. September 17-21, 2016, pp. 442-452.}
+	
+\end{frame}
+
+\begin{frame}[t]{Debian缺陷管理}
+    \begin{minipage}
+        {0.5\textwidth}
+	\begin{block}{Debian的Bug管理}
+		Debian的缺陷使用BTS系统（Bug Tracking System）进行管理。一个新的缺陷在报告后会经历NEW、ACCEPT、RESOLVED等流转状态，直至最终修复并且验证。
+
+	\end{block}
+    \end{minipage}
+    \begin{minipage}
+        {0.5\textwidth}
+    \includegraphics[width=\textwidth]{Bug-Life-Cycle.jpg}
+    \end{minipage}
+	
+\end{frame}
+\begin{frame}[t]{Debian缺陷管理}
+	\begin{block}
+		{Debian缺陷严重级别}
+		\begin{itemize}
+			\item critical: 使其他不相关软件包不可用，或造成数据丢失、安全漏洞等问题
+\item grave：使问题软件包本身不可用或造成数据丢失、安全漏洞等
+\item serious：与Debian政策违背，或者使软件包不适合发布
+\item important：影响软件可用性，尚不至于完全不可用
+\item normal：默认选项，大多数属于此类
+\item minor：不影响可用性，并且修复相对较容易
+\item wishlist：特性请求（Feature Requests），以及由于软件设计原因导致难于修复
+		\end{itemize}
+	\end{block}
+	
+\end{frame}
+\begin{frame}[t]{Debian缺陷管理}
+	\includegraphics[width=0.9\textwidth]{bugs-all.png}
+	\footnotesize
+
+	\url{https://www.debian.org/Bugs/}
+	
+\end{frame}
+
+\section{开源软件在中国}
+\begin{frame}
+    \frametitle{中国开源软件的开端}
+    \begin{block}{中国开源软件的星星之火}
+1994年暑期，宫敏第一次将Linux操作系统引进中国，他用软盘背回大量的自由软件。国家物资部胡贻志主任和国家信息中心高新民主任了解到自由软件的优势后认为，这是个好东西，背后的理念更好。两位领导很支持他的工作，这一年，宫敏帮助国内贸易部萨德岚公司建立了基于Linux的VSAT单向信息发布网等。1997年夏天，宫敏用磁带带回80G容量的软件，独立设计了并成功运行了依托在国家信息中心平台上的《中国自由软件库》。
+
+回国之后的他积极筹备自由软件库的建设，之后中国软件库不断发展壮大。之前，有人向他提议实现Linux的本地化和商业化的事情，他一口否决了这个提议。他说，国内有的厂家只在个别功能上做了一些改进，就封闭了源代码，这不可取。因为Linux同UNIX一样，通过改变某些设置就可以支持各国的语言，而现在国内厂家的做法破坏了Linux的完整性。 他认为一个国家发达与否应该多看看公共财富的多少，自由软件不应该成为谋私利的途径。
+    \end{block}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{中国Linux发行版}
+    \begin{block}
+        {}
+        \begin{itemize}
+            \item 红旗Linux
+            \item Deepin Linux
+            \item 麒麟Linux
+            \item openEuler与EulerOS
+        \end{itemize}
+    \end{block}
+\end{frame}
+\end{document}
