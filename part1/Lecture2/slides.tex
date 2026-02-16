@@ -1,0 +1,633 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{biblatex}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{许可证与生态系统}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\section{许可证制度} % (fold)
+\label{sec:许可证制度}
+\begin{frame}
+  \frametitle{常见许可证}
+	\begin{block}
+		{许可证}
+		\begin{itemize}
+			\item GPL (GNU Public License)
+			\item LGPL (Lesser GNU Public License)
+			\item MPL (Mozilla Public License)
+			\item Apache License
+			\item BSD (Berkeley Software Distribution)
+			\item MIT (Massachusetts Institute of Technology)
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GNU Public License}
+	GNU通用公共许可协议（英语：GNU General Public License，简称 GNU GPL、GPL）是广泛使用的免费软件许可证，可以保证终端用户得自由运行，学习，共享和修改软件。许可证最初由GNU项目的自由软件基金会的理查德·斯托曼撰写，并授予计算机程序的收件人自由软件定义的权利。  GPL是一个Copyleft许可证，这意味着派生作品只能以相同的许可条款分发。 这与许可免费软件许可证有所区别 ，其中BSD许可证和MIT许可证是广泛使用的示例。 GPL是第一个普遍使用的Copyleft许可证\footnote{\url{https://zh.wikipedia.org/wiki/GPL}}。
+	
+\end{frame}
+\begin{frame}
+  \frametitle{Copyleft}
+	GPL授权版本的修改后作品的发行权不是无条件的。 当有人分发GPL的作品又加上自己的修改时，分发整个作品的要求不能大于GPL中的要求。这个要求被称为Copyleft。 它通过软件程序使用版权获得法律权力。 由于GPL的作品受版权保护，被许可人无权重新分发，即使是以修改形式（除合理使用 ）外，除了许可条款外， 如果希望行使通常受版权法限制的权利，例如重新分配，只需遵守GPL的条款。 相反，如果在不遵守GPL条款（例如保留源代码秘密）的情况下分发作品的副本，则原始作者可以根据版权法起诉 。因此，Copyleft使用版权法来完成与常见法律的设置目的相反，不是施加限制，而是赋予其他人权利，以确保权利不能随之被剥夺的方式\footnote{\url{https://zh.wikipedia.org/wiki/Copyleft}}。
+\end{frame}
+
+\begin{frame}
+  \frametitle{GPL传染性}
+	根据GPL许可证，如果原始授权人（作者）使用GPL许可证发布作品，则无论该作品的衍生作品都需要遵循GPL协议。该衍生作品的后续衍生作品同样需要基于GPL发布。
+
+	Linus Torvalds使用GPL协议保护Linux内核。
+\end{frame}
+
+\begin{frame}
+  \frametitle{BSD许可证}
+	\begin{itemize}
+		\item BSD许可证包括多个变种。
+		\item 目前比较流行的是新版BSD许可证，一般认为是比较宽容的许可证。
+		\item 有时被成为Copycenter。
+		\item 使用该许可证的软件包括FreeBSD、Subversion、Postgresql等
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{BSD许可证}
+	\begin{itemize}
+		\item 对于本软件源代码的再散播，必须保留上述的版权宣告、此三条件表列，以及下述的免责声明。
+		\item 对于本套件二进位可执行形式的再散播，必须连带以文件以及／或者其他附于散播包装中的媒介方式，重制上述之版权宣告、此三条件表列，以及下述的免责声明。
+		\item 未获事前取得书面许可，不得使用柏克莱加州大学或本软件贡献者之名称，来为本软件之衍生物做任何表示支持、认可或推广、促销之行为。
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MIT许可证}
+	\begin{itemize}
+		\item 被授权人权利
+
+		被授权人有权利使用、复制、修改、合并、出版发行、散布、再授权和/或贩售软件及软件的副本，及授予被供应人同等权利，惟服从以下义务。
+		\item 被授权人义务
+
+		在软件和软件的所有副本中都必须包含以上版权声明和本许可声明。
+	\end{itemize}
+\end{frame}
+\begin{frame}[t]{Apache许可证}
+    \begin{block}
+        {Apache License和BSD类似，同样鼓励代码共享和尊重原作者的著作权，同样允许代码修改，再发布(作为开源或商业软件)}
+        \begin{itemize}
+            \item 需要给代码的用户一份Apache License
+            \item 如果你修改了代码，需要再被修改的文件中说明
+            \item 在延伸的代码中（修改和有源代码衍生的代码中）需要带有原来代码中的协议、商标、专利声明和其他原来作者规定需要包含的说明
+            \item 如果再发布的产品中包含一个Notice文件，则在Notice文件中需要带有Apache License。你可以在Notice中增加自己的许可，但不可以表现为对Apache License构成更改
+            \item Apache License也是对商业应用友好的许可。使用者也可以在需要的时候修改代码来满足需要并作为开源或商业产品发布/销售。
+        \end{itemize}
+    \end{block}
+\end{frame}
+\begin{frame}
+  \frametitle{今天就能开始用的小知识}
+	\begin{block}
+		{Apache}
+		\begin{itemize}
+			\item The name 'Apache' was chosen from respect for the Native American Indian tribe of Apache (Indé), well-known for their superior skills in warfare strategy and their inexhaustible endurance. \footnote{\url{https://wiki.apache.org/httpd/FAQ}}
+			\item Apache server = A patchy server (误)
+		\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}
+  \frametitle{今天就能开始用的小知识}
+	\centering
+	\includegraphics[height=0.3\textwidth]{apache-Goyaale.jpg}
+	\includegraphics[height=0.3\textwidth]{Apache-Longbow.jpg}
+	
+\end{frame}
+
+\begin{frame}
+  \frametitle{许可证的兼容性}
+	\centering
+	\includegraphics[width=0.6\textwidth]{license-compatibility.png}
+
+	箭头表示兼容方向，左侧许可证相对宽松\footnote{\url{http://www.dwheeler.com/essays/floss-license-slide.html}}
+	
+\end{frame}
+\begin{frame}
+  \frametitle{开源软件许可证的共同特点}
+  \begin{itemize}
+      \item 开源软件许可证都会规定在被许可人接受本许可证获得源代码之后，有将源代码发布的义务（非所有）
+      \item 开源软件许可证一般有``不担保''（No Warranty）条款
+      \item 开源软件许可证一般都规定了关于修改、复制和再发布的条款，但赋予被许可人的各项权利可能不同
+  \end{itemize}
+	
+\end{frame}
+
+% section 许可证制度 (end)
+\section{许可证案例} % (fold)
+\label{sec:许可证案例}
+\begin{frame}
+  \frametitle{版权争议}
+	\begin{block}
+		{SCO vs. IBM}
+		\scriptsize
+		SCO-Linux争议，发生于2003年至2010年间的美国著作权诉讼争议，由软件公司SCO Group对Linux最终用户以及IBM公司等Linux供应商提出的一系列法律案件。声称拥有UNIX System V部分源代码所有权的SCO公司，控诉由IBM公司贡献与集成进入Linux核心中的源代码中，使用了System V的源代码，违反著作权。IBM、Novell与Red Hat反驳此项指控。
+
+2007年8月24日，联邦法院审理SCO对Novell案（SCO v. Novell），法院认定Novell才是Unix商标的合法拥有者，而不是SCO。
+
+2010年3月20日，美国联邦第十巡回上诉法院宣判，Novell才是UNIX与UnixWare商标的合法拥有者。此项判决宣布后，已进入破产保护程序的SCO公司，决定停止继续提出诉讼。
+	\end{block}
+\end{frame}
+
+	\begin{frame}
+		\frametitle{许可证附加条款}
+		\begin{block}
+			{Facebook React}
+			\begin{itemize}
+				\item React（有时叫React.js或ReactJS）是一个为数据提供渲染为HTML视图的开源JavaScript 库。React视图通常采用包含以自定义HTML标记规定的其他组件的组件渲染。\footnote{\url{https://zh.wikipedia.org/wiki/React}}
+				\item 2013年，React开源
+				\item 2016 年 7月，React.js 开源许可协议中的附加专利条款引发争议。
+				\item React被授权为 BSD +专利许可：由于条款限制，不能做任何构成与 Facebook 竞争的事情，否则不再允许使用 ReactJS 或根据本许可证发布的任何 
+				\item Apache 基金会将 Facebook 公司 BSD + 专利许可证下的代码重新分类为 “X 类”。\footnote{\url{https://www.apache.org/legal/resolved.html}}
+                \item 2017年9月，Facebook决定将React.js许可证改为MIT
+			\end{itemize}
+		\end{block}
+
+	\end{frame}
+
+    \begin{frame}
+        \frametitle{许可证典型案例}
+        \begin{block}
+            {MINIX — The most popular OS in the world, thanks to Intel}
+            If you have a modern Intel CPU (released in the last few years) with Intel's Management Engine built in, you've got another complete operating system running that you might not have had any clue was in there: MINIX.  \footnote{\url{https://www.networkworld.com/article/3236064/servers/minix-the-most-popular-os-in-the-world-thanks-to-intel.html}}
+
+            MINIX is running on "Ring -3" (that's "negative 3") on its own CPU. A CPU that you, the user/owner of the machine, have no access to. 
+        \end{block}
+    \end{frame}
+
+    \begin{frame}[t]{MINIX作者的公开信}
+        Thanks for putting a version of MINIX inside the ME-11 management engine chip used on almost all recent desktop and laptop computers in the world. I guess that makes MINIX the most widely used computer operating system in the world, even more than Windows, Linux, or MacOS. And I didn't even know until I read a press report about it.  \footnote{\url{http://www.cs.vu.nl/~ast/intel/}}
+
+        Also a hint was the discussion about the license. I (implicitly) gathered that the fact that MINIX uses the Berkeley license was very important. I have run across this before, when companies have told me that they hate the GPL because they are not keen on spending a lot of time, energy, and money modifying some piece of code, only to be required to give it to their competitors for free. These discussions were why we put MINIX out under the Berkeley license in 2000 (after prying it loose from my publisher).
+    \end{frame}
+
+	\begin{frame}
+	  \frametitle{Android与Linux}
+      Linux采用GPL v2许可证。Android并非采取GPL协议（除了对Linux内核的修改），而是Apache License。
+
+	\end{frame}
+    \begin{frame}[t]{Android如何规避GPL传染性？}
+        \begin{itemize}
+            \item 
+NOTE! This copyright does *not* cover user programs that use kernel
+ services by normal system calls - this is merely considered normal use
+ of the kernel, and does *not* fall under the heading of "derived work".
+ Also note that the GPL below is copyrighted by the Free Software
+ Foundation, but the instance of code that it refers to (the Linux
+ kernel) is copyrighted by me and others who actually wrote it.
+            \item 
+ Also note that the only valid version of the GPL as far as the kernel
+ is concerned is \_this\_ particular version of the license (ie v2, not
+ v2.2 or v3.x or whatever), unless explicitly otherwise stated.
+        \end{itemize}
+        \pause
+        翻译：许可证不覆盖通过正常系统调用来使用Linux内核服务的用户程序。 
+    \end{frame}
+
+    \begin{frame}[t]{Android如何规避GPL传染性？}
+ 一般的GNU/Linux上图中的libc位置是glibc。 glibc是GNU的，属于LGPL授权，有传染性。
+ libc是google 改写优化的Free BSD Bionic库，属于BSD协议。\footnote{\url{https://my.oschina.net/blueprint/blog/142244}}
+
+ \centering
+    \includegraphics[width=0.6\textwidth]{android.jpeg}
+    \end{frame}
+
+	\begin{frame}[t]{Docker}
+	Docker 是一个开放源代码软件，是一个开放平台，用于开发应用、交付（shipping）应用、运行应用。 Docker允许用户将基础设施（Infrastructure）中的应用单独分割出来，形成更小的颗粒（容器），从而提高交付软件的速度。	{\scriptsize{\footnote{\url{https://zh.wikipedia.org/zh-cn/Docker}}}}
+
+	You may not use the Service if you are a person barred from using the Service under the laws of the United States or other countries, including the country in which you are resident or from which you use the Service, or international laws or treaties. You may not use the Service if you are or represent an entity that is listed on any U.S. Government Denied Party/Person List. {\scriptsize{\footnote{\url{https://www.docker.com/legal/docker-terms-service}}}}
+
+
+	\end{frame}
+	
+% section 许可证案例 (end)
+\section{开源软件生态系统} % (fold)
+\label{sec:开源软件生态系统}
+\begin{frame}[t]{开源软件仓库}
+    \begin{block}
+        {定义}
+    软件仓库是收藏互联网上可用软件包(应用程序)的"图书馆"。通过软件仓库用户可以获取和安装软件包。开源软件仓库是针对开源软件的软件仓库。
+
+    大多数软件仓库将仓库部署在互联网服务器上。软件仓库可能针对特定语言编写的程序，如Perl语言的CPAN仓库或Python的PyPI，或者针对整个操作系统，如大多数Linux发行版。大多数软件仓库为用户提供包管理器（Package Manager），用来解决软件包搜索、安装、卸载、处理软件包之间依赖关系。例如Debian及其衍生发行版（如Ubuntu）提供的APT（Advanced Packaging Tool）。
+    \end{block}
+\end{frame}
+\begin{frame}[t]{开源软件仓库}
+    
+\begin{tabular}{lr}
+C++      		 & Boost   \\
+Haskell  		 & Hackage\\
+Java     		 & Maven\\
+.NET     	     & NuGet\\
+Node.js  		 & NPM\\
+Perl     		 & CPAN\\
+PHP      	     & PEAR \\
+Python   	     & PyPI\\
+R        	     & CRAN\\
+\TeX{}/\LaTeX{}	 & CTAN\\
+
+\end{tabular}
+
+\pause
+\begin{block}
+    {}
+C[PRT]AN代表Comprehensive Perl/R/\TeX{} Archive Network
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{开源生态系统}
+    软件生态系统值一组在相同环境下共同开发和协同进化的一组软件系统。生态系统可以指组织（软件公司），社会（开源社区）或技术（如Python技术栈）。
+
+    软件生态系统词组使用较为广泛，不过尚存在争议\footnote{\url{https://www.gnu.org/philosophy/words-to-avoid.html\#Ecosystem}}。本课程中取技术角度的含义。
+
+    
+\end{frame}
+
+\begin{frame}[t]{所谓全栈}
+	\begin{block}{Full Stack}
+To me, a Full Stack Developer is someone with familiarity in each layer, if not mastery in many and a genuine interest in all software technology.
+\\
+		
+		Good developers who are familiar with the entire stack know how to make life easier for those around them. This is why I'm so against silos in the work place. Sure, politics and communication challenges get in the way in large organizations. I think the point Facebook is going for with their hiring policy is, if smart people use their heads and their hearts, a better product gets built in less time\footnote{\url{https://www.laurencegellert.com/2012/08/what-is-a-full-stack-developer/}}.
+	\end{block}
+\end{frame}
+\begin{frame}[t]{所谓全栈}
+	\begin{block}{Layers of the full stack}
+		\begin{itemize}
+			\item Server, Network, and Hosting Environment.
+			\item Data Modeling
+			\item Business Logic
+			\item API layer/Action layer/MVC
+			\item User Interface
+			\item User Experience
+			\item Understanding what the customer and the business need
+		\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}[t]{所谓全栈}
+	\centering
+	\vspace{-1.2cm}
+	\includegraphics[width=0.4\textwidth]{full-stack.jpg}
+\end{frame}
+
+\begin{frame}[t]{主力语言}
+\begin{block}{}
+\begin{itemize}
+\item C/C++: Gcc/llvm
+\item Java 
+\item C\#: via mono
+\item Rust: 讨论过程开源：\url{https://github.com/rust-lang/rfcs} 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{胶水语言}
+\begin{block}{}
+\begin{itemize}
+\item Python
+\item Perl
+\item PHP
+\item Ruby
+\item Bash
+\item PowerShell
+\item JavaScript
+\item Lua
+\item R
+\item Julia 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{数据库}
+\begin{block}{}
+\begin{itemize}
+\item Oracle
+\item MySQL
+\item Postgresql
+\item MongoDB
+\item Redis
+\item Sqlite 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{服务器}
+\begin{block}{}
+\begin{itemize}
+\item IIS
+\item nginx
+\item Apache
+\end{itemize}
+\end{block}
+\begin{table}
+    \caption{市场份额, 2021/02\footnote{\url{https://en.wikipedia.org/wiki/Web\_server}}}
+    
+\begin{tabular}{lll}
+    nginx             & NGINX, Inc.                   & 34.54\% \\
+    Apache            & Apache                        & 26.32\% \\
+    IIS               & Microsoft                     & 6.5\%   \\
+    OpenResty         & OpenResty Software Foundation & 6.36\%  \\
+    Cloudflare Server & Cloudflare, Inc.              & 5.0\%   \\
+% 2017
+% Apache               & Apache                 & 48.5\%\\
+% nginx                & NGINX, Inc.            & 35.4\%\\
+% IIS                  & Microsoft              & 10.8\%\\
+% LiteSpeed Web Server & LiteSpeed Technologies & 2.9\%\\
+% GWS                  & Google                 & 1.1\%\\
+
+% 2019
+% Apache          & Apache      &   44.3\%\\
+% nginx           & NGINX, Inc.  &        41.0\%\\
+% IIS             & Microsoft     & 8.9\%\\
+% LiteSpeed Web Server &       LiteSpeed   Technologies   &  3.9\%\\
+% GWS             & Google        & 0.9\%\\
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}[t]{Web框架}
+\begin{block}{}
+\begin{itemize}
+\item J2EE
+\item Dancer
+\item Django
+\item Ruby on Rails
+\item Zend 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{数据挖掘/机器学习}
+\begin{block}{}
+\begin{itemize}
+\item Weka
+\item CRAN 
+\item sk-learn
+\item tensorflow 
+\item torch
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{前端}
+\begin{block}{}
+\begin{itemize}
+\item Angular
+\item Express
+\item Ext.js
+\item Bootstrap
+\item Vue.js
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{GUI}
+\begin{block}{}
+\begin{itemize}
+\item Qt
+\item Gtk
+\item MFC
+\item WPF
+\item wxWidgets 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{软件测试}
+\begin{block}{}
+\begin{itemize}
+\item cpptest
+\item Googletest
+\item Junit 
+\item nose
+\item pytest
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{分布式系统}
+\begin{block}{}
+\begin{itemize}
+\item Hadoop
+\item Spark
+\item Storm 
+\item Openstack
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{虚拟化}
+\begin{block}{}
+\begin{itemize}
+\item Openstack
+\item Docker
+\item debootstrap 
+\item libvirt
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{数据获取}
+\begin{block}{}
+\begin{itemize}
+        \item nutch
+\item scrapy
+\item requests
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{版本控制}
+    \begin{minipage}
+        {.4\textwidth}
+\begin{block}{}
+\begin{itemize}
+\item SVN
+\item Git
+\item Mercurial
+\item Bazaar
+\end{itemize}
+\end{block}
+    \end{minipage}
+    \begin{minipage}
+        {.5\textwidth}
+        \centering
+\includegraphics[width=.8\textwidth]{git.png}
+    \end{minipage}
+\end{frame}
+
+\begin{frame}[t]{可视化}
+\begin{block}{}
+\begin{itemize}
+\item gnuplot
+\item matplotlib
+\item ggplot2
+\end{itemize}
+\end{block}
+\end{frame}
+
+
+\begin{frame}[t]{文档}
+\begin{block}{}
+\begin{itemize}
+\item \LaTeX{}
+\item MS Office
+\item Doxygen
+\item Wiki
+\item sphinx
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{其他}
+\begin{block}{Functional programming}
+\begin{itemize}
+\item Lisp
+\item Haskell
+\item Ocaml
+\item R 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{其他}
+\begin{block}{Literate Programming}
+    文学编程是由高德纳提出的编程方法，希望能用来取代结构化编程范型。文学编程范型不同于传统的由计算机强加的编写程序的方式和顺序，而代之以让程序员用他们自己思维内在的逻辑和流程所要求的顺序开发程序。
+\begin{itemize}
+\item cweb
+\item knitr
+\item jupyter
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{其他}
+\begin{block}{编辑器/开发环境}
+\begin{itemize}
+\item vim
+\item emacs
+\item sublime
+\item atom 
+\item vscode
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{小结}
+    \begin{itemize}
+        \item 开源软件许可证以及案例
+        \item 开源软件生态环境
+    \end{itemize}
+
+    \begin{block}
+        {准备}
+        \begin{itemize}
+            \item 安装git
+            \item 安装python
+            % \item \url{https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/}
+            % \item \url{https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/}
+        \end{itemize}
+        \tiny
+        \begin{verbatim}
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+conda config --set show_channel_urls yes
+        \end{verbatim}
+    \end{block}
+\end{frame}
+
+% section 开源软件生态系统 (end)
+
+\end{document}
