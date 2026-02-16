@@ -1,0 +1,12 @@
+\frametitle{习题}
+已知如下命令能够获得格式化git log
+
+\begin{verbatim}
+git log --pretty=format:"%ci::%an::%H::%f"
+\end{verbatim}
+
+其中\%ci表示时间；\%an表示作者；\%H表示提交id；\%f表示提交信息。将上述四个字段存入mongodb数据库
+
+
+
+^^I

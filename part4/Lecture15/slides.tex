@@ -1,0 +1,295 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\usepackage{color}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+\raggedright
+
+\let\oldfootnotesize\footnotesize
+\renewcommand*{\footnotesize}{\oldfootnotesize\tiny}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{基于MongoDB的半结构化存储}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Scientific Writing}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\section{MongoDB简介}
+\begin{frame}[t]{NoSQL简介}
+    \begin{block}{概念}
+        NoSQL是对不同于传统的关系数据库的数据库管理系统的统称。两者存在许多显著的不同点，其中最重要的是NoSQL不使用SQL作为查询语言。其数据存储可以不需要固定的表格模式，也经常会避免使用SQL的JOIN操作，一般有水平可扩展性的特征。
+
+        NoSQL的结构通常提供弱一致性的保证，如最终一致性，或交易仅限于单个的数据项。
+
+        \begin{itemize}
+            \item 图形关系存储：Neo4J、ArangoDB
+            \item 键-值存储：Redis、MemcacheD、BerkeleyDB
+            \item 列存储: HBase、Cassandra
+            \item 文档存储: MongoDB、CouchDB
+        \end{itemize}
+    \end{block}
+\end{frame}
+\begin{frame}[t]{MongoDB简介}
+	\centering
+	\includegraphics[width=.4\textwidth]{mongodb.png}
+	\begin{block}{Intro}
+		\small
+		MongoDB是一种文档导向的数据库管理系统，由C++撰写而成，以此来解决应用程序开发社区中的大量现实问题。2007年10月，MongoDB由10gen团队所发展。2009年2月首度推出\footnote{\url{https://zh.wikipedia.org/zh-cn/MongoDB}}。
+	\end{block}
+
+	\Huge
+	{\color{red}Mongo} for \pause hu{\color{red}mongo}us
+\end{frame}
+\begin{frame}[t]{许可证}
+	\begin{block}{Server Side Public License}
+		Red Hat won't use MongoDB in Red Hat Enterprise Linux or Fedora thanks to MongoDB's new Server Side Public License.
+
+		Red Hat's Technical and Community Outreach Program Manager Tom Callaway explained, in a note stating MongoDB is being removed from Fedora Linux, that "It is the belief of Fedora that the SSPL is intentionally crafted to be aggressively discriminatory towards a specific class of users." Debian Linux had already dropped MongoDB from its distribution\footnote{\url{https://www.zdnet.com/article/mongodb-open-source-server-side-public-license-rejected/}} \footnote{\url{https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=915537}}. 
+	\end{block}
+\end{frame}
+\section{MongoDB安装}
+\begin{frame}[t,fragile]{MongoDB安装}
+\begin{block}{开箱即用}
+	\begin{itemize}
+		\item Debian/Ubuntu: \begin{verbatim}sudo apt-get install mongodb\end{verbatim}
+		\item Windows: \url{https://www.mongodb.com/download-center}，下载后一路Next安装，或直接下载压缩包解压
+		\item OSX: \begin{verbatim}brew install mongodb\end{verbatim}
+	\end{itemize}
+\end{block}
+\end{frame}
+\begin{frame}[t]{MongoDB启动}
+\begin{block}{开箱即用}
+	\begin{itemize}
+		\item Debian/Ubuntu: service mongodb start
+		\item Windows: mongod -{}-dbpath path$\backslash$to$\backslash$dbpath
+		\item OSX: mongod -{}-dbpath path/to/dbpath
+	\end{itemize}
+\end{block}
+\end{frame}
+\begin{frame}[t]{MongoDB常用参数}
+	\scriptsize
+	\begin{tabular}{ll}
+-{}-dbpath arg  & directory for datafiles - defaults to /data/db                                \\
+-{}-port arg    & specify port number - 27017 by default                                        \\
+-{}-replSet arg & arg is <setname>                                                              \\
+-{}-configsvr   & declare this is a config db of a cluster;                                     \\
+                & default port 27019; default dir /data/configdb                                \\
+-{}-journal     & enable journaling                                                             \\
+-{}-nojournal   & disable journaling (journaling is on by default for 64 bit)                   \\
+-{}-logpath arg & log file to send write to instead of stdout - has to be a file, not directory \\
+	\end{tabular}
+\end{frame}
+\section{MongoDB基本操作}
+\begin{frame}[t,fragile]{CRUD操作概览}
+\begin{block}{CRUD (1): Create}
+	\scriptsize
+\begin{verbatim}
+#choose db
+>use test
+#insert json object into collection
+>db.students.insert({"id": 123, "name": "zhangsan", "age": 19})
+WriteResult({ "nInserted" : 1 })
+\end{verbatim}
+\end{block}
+\begin{block}{CRUD (2): Retrieve}
+	\scriptsize
+\begin{verbatim}
+#choose db
+>use test
+> db.students.find({"id": 123})
+{ "_id" : ObjectId("..."), "id" : 123, "name" : "zhangsan", "age" : 19 }
+
+\end{verbatim}
+\end{block}
+\end{frame}
+\begin{frame}[t,fragile]{CRUD操作概览}
+\begin{block}{CRUD (3): Update}
+	\scriptsize
+\begin{verbatim}
+> db.students.update({"id":123}, {"$inc": {"age":1}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.students.find()
+{ "_id" : ObjectId("..."), "id" : 123, "name" : "zhangsan", "age" : 20 }
+\end{verbatim}
+\end{block}
+\begin{block}{CRUD (4): Delete}
+	\scriptsize
+\begin{verbatim}
+> db.students.deleteMany({"id":123})
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+\end{verbatim}
+\end{block}
+\end{frame}
+
+\section{基于pymongo的数据库连接}
+\begin{frame}[t,fragile]{pymongo安装}
+	\begin{block}{}
+		\begin{itemize}
+			\item via pip
+\begin{verbatim}
+$pip install pymongo
+\end{verbatim}
+			\item via distro (e.g., apt)
+\begin{verbatim}
+$sudo apt-get install python-pymongo
+\end{verbatim}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{pymongo API使用}
+	\begin{block}{Python snippet}
+		\scriptsize
+\begin{verbatim}
+import pymongo
+from pymongo import MongoClient
+client = MongoClient()
+
+# Get the sampleDB database
+db = client.sampleDB 
+# equivalently, use db = client['sampleDB']
+coll = db.sampleCollection
+# equivalently, use coll = db['sampleCollection']
+#CRUD: Create
+coll.insert_one({"id": 123, "name": "zhangsan", "age": 18})
+coll.insert_one({"id": 124, "name": "lisi", "age": 17})
+#CRUD: Retrieve
+for entry in coll.find():
+    print("id: %d, name: %s, age: %d" % 
+          (entry['id'], entry['name'], entry['age'])
+\end{verbatim}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t,fragile]{pymongo API使用}
+	\begin{block}{Python snippet}
+		\scriptsize
+\begin{verbatim}
+#CRUD: Update
+col.update({"age": {"$lt": 20}}, {"$inc": {"age": 1}})
+#{u'n': 1, u'nModified': 1, u'ok': 1, 'updatedExisting': True}
+col.update({"age": {"$lt": 20}}, {"$inc": {"age": 1}}, multi=True)
+#{u'n': 2, u'nModified': 2, u'ok': 1, 'updatedExisting': True}
+#CRUD: Delete
+col.remove({"age": {"$gt": 10}})
+#{u'n': 2, u'ok': 1}
+coll.insert_one({"id": 123, "name": "zhangsan", "age": 18})
+coll.insert_one({"id": 124, "name": "lisi", "age": 17})
+col.remove({"age": {"$gt": 10}}, multi=False)
+#{u'n': 1, u'ok': 1}
+\end{verbatim}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	\vspace{3cm}
+	\Huge
+	Thanks
+	\vspace{2cm}
+	\normalsize
+	\flushright
+		Zhilei Ren
+
+		zren@dlut.edu.cn
+	
+\end{frame}
+\begin{frame}[t,fragile]{习题}
+	已知如下命令能够获得格式化git log
+
+\begin{verbatim}
+git log --pretty=format:"%ci::%an::%H::%f"
+\end{verbatim}
+
+其中\%ci表示时间；\%an表示作者；\%H表示提交id；\%f表示提交信息。将上述四个字段存入mongodb数据库
+
+
+
+	
+\end{frame}
+\end{document}
