@@ -1,0 +1,10 @@
+\babel@toc {english}{}\relax 
+\beamer@sectionintoc {1}{Python环境安装}{2}{0}{1}
+\beamer@sectionintoc {2}{Hello world}{10}{0}{2}
+\beamer@sectionintoc {3}{变量、类型、基本流程控制}{15}{0}{3}
+\beamer@subsectionintoc {3}{1}{数值}{16}{0}{3}
+\beamer@subsectionintoc {3}{2}{字符串}{28}{0}{3}
+\beamer@subsectionintoc {3}{3}{列表}{52}{0}{3}
+\beamer@subsectionintoc {3}{4}{基本流程控制}{62}{0}{3}
+\beamer@sectionintoc {4}{函数}{68}{0}{4}
+\beamer@sectionintoc {5}{递归}{75}{0}{5}

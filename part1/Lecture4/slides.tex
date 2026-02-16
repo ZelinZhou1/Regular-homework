@@ -1,0 +1,1347 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{Python基础}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\section{Python环境安装}
+\begin{frame}
+	\frametitle{为什么选择Python}
+	\begin{itemize}
+		\item 流行
+		\item 简单（？）
+		\item 丰富的生态系统
+		\item 交互界面友好
+	\end{itemize}
+\end{frame}
+\begin{frame}[t,fragile]
+  \frametitle{所谓Zen of Python}
+	\scriptsize
+\begin{verbatim}
+In [1]: import this
+The Zen of Python, by Tim Peters
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!
+\end{verbatim}
+	
+\end{frame}
+\begin{frame}
+  \frametitle{Python之禅}
+	\scriptsize
+	\begin{block}
+		　　{Python之禅 by Tim Peters}
+		\begin{itemize}
+\item    优美胜于丑陋（Python 以编写优美的代码为目标）
+\item    明了胜于晦涩（优美的代码应当是明了的，命名规范，风格相似）
+\item    简洁胜于复杂（优美的代码应当是简洁的，不要有复杂的内部实现）
+\item    复杂胜于凌乱（如果复杂不可避免，那代码间也不能有难懂的关系，要保持接口简洁）
+\item    扁平胜于嵌套（优美的代码应当是扁平的，不能有太多的嵌套）
+\item    间隔胜于紧凑（优美的代码有适当的间隔，不要奢望一行代码解决问题）
+\item    可读性很重要（优美的代码是可读的）
+\item    即便假借特例的实用性之名，也不可违背这些规则（这些规则至高无上）
+\item    不要包容所有错误，除非你确定需要这样做（精准地捕获异常，不写 except:pass）
+\item    当存在多种可能，不要尝试去猜测
+\item    而是尽量找一种，最好是唯一一种明显的解决方案（如果不确定，就用穷举法）
+\item    虽然这并不容易，因为你不是 Python 之父（这里的 Dutch 是指 Guido ）
+\item    做也许好过不做，但不假思索就动手还不如不做（动手之前要细思量）
+\item    如果你无法向人描述你的方案，那肯定不是一个好方案；反之亦然（方案测评标准）
+\item    命名空间是一种绝妙的理念，我们应当多加利用（倡导与号召）
+\item \url{http://blog.csdn.net/gzlaiyonghao}
+		\end{itemize}
+		
+	\end{block}
+
+\end{frame}
+\begin{frame}
+	\frametitle{Python版本}
+	\begin{itemize}
+		\item Python存在两个用途广泛的版本：2.x和3.x
+		\item 两者不完全兼容
+		\item Python 2.x分支版本在2020年停止更新
+		\item Python 3对UTF-8支持更好
+		\item 部分公司仍选择Python 2
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\frametitle{Python发行版}
+	\begin{block}{}
+		\begin{itemize}
+			\item CPython
+			\item Anaconda
+			\item Python (x,y)
+			\item Active Python
+		\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}
+	\frametitle{Jupyter Notebook}
+	\centering
+	\includegraphics[width=\linewidth]{jupyter.png}
+\end{frame}
+\begin{frame}
+	\frametitle{本学期将涉及的Python知识}
+	\begin{block}{知识点}
+		\begin{itemize}
+			\item 流程控制（结构化）
+			\item 面向对象
+			\item 数据获取
+			\item 数据存储
+			\item 数据可视化
+			\item Web开发
+		\end{itemize}
+	\end{block}
+\end{frame}
+\section{Hello world}
+\begin{frame}[fragile]
+	\frametitle{第一个Python程序}
+	\scriptsize
+\begin{verbatim}
+$ipython3
+Python 3.5.2+ (default, Sep 22 2016, 12:18:14)
+Type ``copyright'', ``credits'' or ``license'' for more information.
+
+IPython 5.1.0 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+
+In [1]:
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{第一个Python程序}
+	\scriptsize
+\begin{verbatim}
+In [1]: print("Hello world")
+Hello world
+
+In [2]: print(1 + 2)
+3
+
+In [3]: 
+\end{verbatim}
+
+\end{frame}
+
+
+\begin{frame}[t]{Python Turtle}
+	\begin{block}{Logo}
+Python Turtle受Logo语言启发而来。
+	\end{block}
+	\begin{minipage}
+		{0.45\textwidth}
+		\includegraphics[width=0.4\linewidth]{Ucblogo.png}
+	\end{minipage}
+	\hfill
+	\begin{minipage}
+		{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{ucblogo-gui.png}
+	\end{minipage}
+\end{frame}
+
+\begin{frame}[t,fragile]{Python Turtle}
+	\begin{verbatim}
+to tree :len :n
+  if :n < 1 [stop]
+  forward :len
+  left 45
+  tree (:len / 2) (:n - 1)
+  right 90
+  tree (:len / 2) (:n - 1)
+  left 45
+  back :len
+end
+
+\end{verbatim}
+	
+\end{frame}
+
+
+\section{变量、类型、基本流程控制} % (fold)
+\label{sec:变量、类型、基本流程控制}
+\subsection{数值}
+
+\begin{frame}[t]{数值}
+
+	\begin{itemize}
+		\item Python解释器可以当计算器使
+		\item 加减乘除都支持
+		\item 括号也能用
+		\item 整形类型为int
+		\item 有小数点的类型为float
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> 2 + 2
+4
+>>> 50 - 5*6
+20
+>>> (50 - 5*6) / 4
+5.0
+>>> 8 / 5  # 除法返回浮点数
+1.6
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t]{数值}
+
+	\begin{itemize}
+		\item 除法/返回浮点型
+        \item 整数除法用//
+        \item 求模用\%
+        \item 幂运算用 **
+        \item 赋值用=
+        \item 不赋值直接用报错
+        \item 混用整数浮点数类型提升
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> 17 / 3  # classic division returns a float
+5.666666666666667
+>>>
+>>> 17 // 3  # floor division discards the fractional part
+5
+>>> 17 % 3  # the % operator returns the remainder of the division
+2
+>>> 5 * 3 + 2  # result * divisor + remainder
+17
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> 5 ** 2  # 5 squared
+25
+>>> 2 ** 7  # 2 to the power of 7
+128
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> width = 20
+>>> height = 5 * 9
+>>> width * height
+900
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> n  # try to access an undefined variable
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'n' is not defined
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> 4 * 3.75 - 1
+14.0
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{数值}
+
+\begin{itemize}
+    \item 交互模式下\_是特殊变量
+    \item 上一次计算的结果
+    \item 类似bash的\$?或cmd的\%errorlevel\%
+    \item 做计算器很方便
+    \item 非交互模式不能用
+    \item 默认交互环境（非ipython）下赋值会覆盖
+    \item 除了整数、浮点数，也支持复数
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+
+
+>>> tax = 12.5 / 100
+>>> price = 100.50
+>>> price * tax
+12.5625
+>>> price + _
+113.0625
+>>> round(_, 2)
+113.06
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{数值}
+
+
+\begin{verbatim}
+ $cat b.py
+ #!/usr/bin/python3
+ def foo():
+     return 3
+     
+ foo()
+ print(_)
+     
+$ python3 b.py
+Traceback (most recent call last):
+  File ``b.py'', line 7, in <module>
+    print(_)
+NameError: name '_' is not defined
+
+\end{verbatim}
+
+
+\end{frame}
+\subsection{字符串}
+
+\begin{frame}[t]{字符串}
+
+    \begin{itemize}
+        \item 除了数值，Python同样支持字符串
+        \item 可以用单引号
+        \item 也可以用双引号
+        \item 没有区别
+        \item \textbackslash{} 用于转义
+        \item 用r省去转义（raw）
+        \item """...""" 或 '{}'{}'...'{}'{}'支持换行 
+        \item \textbackslash{} 忽略回车
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> 'spam eggs'  # single quotes
+'spam eggs'
+>>> 'doesn\'t'  # use \' to escape the single quote...
+"doesn't"
+>>> "doesn't"  # ...or use double quotes instead
+"doesn't"
+>>> '"Yes," he said.'
+'"Yes," he said.'
+>>> "\"Yes,\" he said."
+'"Yes," he said.'
+>>> '"Isn\'t," she said.'
+'"Isn\'t," she said.'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> '"Isn\'t," she said.'
+'"Isn\'t," she said.'
+>>> print('"Isn\'t," she said.')
+"Isn't," she said.
+>>> s = 'First line.\nSecond line.'  # \n means newline
+>>> s  # without print(), \n is included in the output
+'First line.\nSecond line.'
+>>> print(s)  # with print(), \n produces a new line
+First line.
+Second line.
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> print('C:\some\name')  # here \n means newline!
+C:\some
+ame
+>>> print(r'C:\some\name')  # note the r before the quote
+C:\some\name
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+print("""\
+Usage: thingy [OPTIONS]
+     -h                        Display this usage message
+     -H hostname               Hostname to connect to
+""")
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t]{字符串}
+
+\begin{itemize}
+    \item 加号拼接字符串
+    \item 乘号重复字符串
+    \item 字符串常量直接拼接
+    \item 字符串可下标
+    \item 0起始，-1最后
+    \item :用于切片，左闭右开
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> # 3 times 'un', followed by 'ium'
+>>> 3 * 'un' + 'ium'
+'unununium'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> 'Py' 'thon'
+'Python'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> prefix = 'Py'
+>>> prefix 'thon'  # can't concatenate a variable and a string literal
+  ...
+SyntaxError: invalid syntax
+>>> ('un' * 3) 'ium'
+  ...
+SyntaxError: invalid syntax
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> prefix + 'thon'
+'Python'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> text = ('Put several strings within parentheses '
+...         'to have them joined together.')
+>>> text
+'Put several strings within parentheses to have them joined together.'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word = 'Python'
+>>> word[0]  # character in position 0
+'P'
+>>> word[5]  # character in position 5
+'n'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[-1]  # last character
+'n'
+>>> word[-2]  # second-last character
+'o'
+>>> word[-6]
+'P'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[0:2]  # characters from position 0 (included) to 2 (excluded)
+'Py'
+>>> word[2:5]  # characters from position 2 (included) to 5 (excluded)
+'tho'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[:2] + word[2:]
+'Python'
+>>> word[:4] + word[4:]
+'Python'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[:2]   # character from the beginning to position 2 (excluded)
+'Py'
+>>> word[4:]   # characters from position 4 (included) to the end
+'on'
+>>> word[-2:]  # characters from the second-last (included) to the end
+'on'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+ +---+---+---+---+---+---+
+ | P | y | t | h | o | n |
+ +---+---+---+---+---+---+
+ 0   1   2   3   4   5   6
+-6  -5  -4  -3  -2  -1
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[42]  # the word only has 6 characters
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: string index out of range
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[4:42]
+'on'
+>>> word[42:]
+''
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{字符串}
+
+    \begin{itemize}
+        \item Python字符串是不可变的，与Java类似
+        \item len返回长度，类比strlen
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> word[0] = 'J'
+  ...
+TypeError: 'str' object does not support item assignment
+>>> word[2:] = 'py'
+  ...
+TypeError: 'str' object does not support item assignment
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> 'J' + word[1:]
+'Jython'
+>>> word[:2] + 'py'
+'Pypy'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{字符串}
+
+
+\begin{verbatim}
+
+
+>>> s = 'supercalifragilisticexpialidocious'
+>>> len(s)
+34
+
+
+\end{verbatim}
+
+
+\end{frame}
+\subsection{列表}
+
+\begin{frame}[t]{列表}
+
+\begin{itemize}
+    \item Python支持若干数据类型
+    \item 最常见的是列表
+    \item 与数组类似
+    \item 允许元素类型不同
+    \item 和字符串类似，可下标可切片
+    \item 加法和乘法也和字符串类似
+    \item len返回长度
+    \item 与字符串不同的，列表是可变的
+    \item append方法用于追加
+    \item 多维数组用嵌套列表实现
+        
+\end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> squares = [1, 4, 9, 16, 25]
+>>> squares
+[1, 4, 9, 16, 25]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> squares[0]  # indexing returns the item
+1
+>>> squares[-1]
+25
+>>> squares[-3:]  # slicing returns a new list
+[9, 16, 25]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> squares[:]
+[1, 4, 9, 16, 25]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> squares + [36, 49, 64, 81, 100]
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> cubes = [1, 8, 27, 65, 125]  # something's wrong here
+>>> 4 ** 3  # the cube of 4 is 64, not 65!
+64
+>>> cubes[3] = 64  # replace the wrong value
+>>> cubes
+[1, 8, 27, 64, 125]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> cubes.append(216)  # add the cube of 6
+>>> cubes.append(7 ** 3)  # and the cube of 7
+>>> cubes
+[1, 8, 27, 64, 125, 216, 343]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> letters = ['a', 'b', 'c', 'd']
+>>> len(letters)
+4
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{列表}
+
+
+\begin{verbatim}
+
+
+>>> a = ['a', 'b', 'c']
+>>> n = [1, 2, 3]
+>>> x = [a, n]
+>>> x
+[['a', 'b', 'c'], [1, 2, 3]]
+>>> x[0]
+['a', 'b', 'c']
+>>> x[0][1]
+'b'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\subsection{基本流程控制}
+\begin{frame}[t]{if Statements}
+
+
+	\begin{itemize}
+		\item if用于分支
+		\item True/False表示真假
+		\item None/False/0/''/()/[]/\{\}会判定为假
+		\item 可以有任意多个elif分支
+		\item 缩进代表嵌套深度
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{if Statements}
+
+
+\begin{verbatim}
+
+
+>>> x = int(input("Please enter an integer: "))
+Please enter an integer: 42
+>>> if x < 0:
+...     x = 0
+...     print('Negative changed to zero')
+... elif x == 0:
+...     print('Zero')
+... elif x == 1:
+...     print('Single')
+... else:
+...     print('More')
+...
+More
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{for Statements}
+
+	\begin{itemize}
+		\item for用于循环
+		\item 可以在列表、字符串上遍历
+		\item 可以用range生成遍历序列
+		\item range左闭右开
+		\item range在Python3中不返回列表，可用list(range())习语
+		\item 缩进代表嵌套深度
+	\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{for Statements}
+
+
+\begin{verbatim}
+
+
+>>> # Measure some strings:
+... words = ['cat', 'window', 'defenestrate']
+>>> for w in words:
+...     print(w, len(w))
+...
+cat 3
+window 6
+defenestrate 12
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{The range Function}
+
+
+\begin{verbatim}
+
+
+>>> for i in range(5):
+...     print(i)
+...
+0
+1
+2
+3
+4
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+% section 变量、类型、基本流程控制 (end)
+\section{函数} % (fold)
+\label{sec:函数}
+
+\begin{frame}
+  \frametitle{函数定义}
+	\begin{itemize}
+		\item def开头，代表定义函数
+		\item def和函数名中间要敲一个空格
+		\item 之后是函数名，这个名字用户自己起的，方便自己使用就好
+		\item 函数名后跟圆括号()，代表定义的是函数，里边可加参数
+		\item 圆括号()后一定要加冒号: 这个很重要，不要忘记了
+		\item 代码块部分，是由语句组成，要有缩进
+		\item 函数要有返回值return
+		\item 调用时使用函数名(参数)方式
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[t,fragile]{函数}
+
+
+\begin{verbatim}
+
+def foo():
+    print("hello world")
+
+def add(x, y):
+    return x + y
+
+print(add(3, 4))
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{函数}
+\begin{verbatim}
+import turtle
+def square(length):
+    turtle.forward(length)
+    turtle.left(90)
+    turtle.forward(length)
+    turtle.left(90)
+    turtle.forward(length)
+    turtle.left(90)
+    turtle.forward(length)
+    turtle.left(90)
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{函数}
+	\huge
+	左转，左转，左转，左转，好像是个圈哟
+\end{frame}
+\begin{frame}[t,fragile]{函数}
+\begin{verbatim}
+def square(length):
+    for i in range(4):
+        turtle.forward(length)
+        turtle.left(90)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[t,fragile]{函数}
+\begin{verbatim}
+def square(length):
+    for i in range(4):
+        turtle.forward(length)
+        turtle.left(90)
+    square(length + 10)
+\end{verbatim}
+	
+\end{frame}
+% section 函数 (end)
+\section{递归} % (fold)
+\label{sec:递归}
+\begin{frame}
+  \frametitle{递归}
+	\huge
+	To understand recursion, first you have to understand recursion.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{阶乘}
+\begin{verbatim}
+def factorial(n):
+    if n <= 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{递归}
+	\huge
+	With a little help from my friends.
+	\large
+	\flushright
+	-- The Beatles
+\end{frame}
+\begin{frame}
+  \frametitle{分形}
+	分形（Fractal），又称碎形、残形，通常被定义为「一个粗糙或零碎的几何形狀，可以分成数個部分，且每一部分都（至少近似地）是整体缩小后的形状」，即具有自相似的性质。\footnote{\url{https://zh.wikipedia.org/wiki/分形}}
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{Turtle}
+\begin{verbatim}
+import turtle
+
+def tree(length,n):
+    """ paints a branch of a tree """
+    if length < (length/n):
+        return                    # 边界条件
+    turtle.forward(length)        # 主干
+    turtle.left(45)               # 左转分叉 
+    tree(length * 0.5,length/n)   # 左子树
+    turtle.right(90)              # 右转分叉
+    tree(length * 0.5,length/n)   # 右子树
+    turtle.left(45)               # 转回
+    turtle.backward(length)       # 回到起点
+    return                        # 返回
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Turtle}
+	\centering
+	\includegraphics[width=0.3\textwidth]{tree.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Turtle}
+	\centering
+	\includegraphics[width=0.3\textwidth]{triangle.png}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Turtle}
+	\centering
+	\includegraphics[width=0.3\textwidth]{snowflake.png}
+\end{frame}
+\begin{frame}
+  \frametitle{Turtle}
+	\centering
+	\includegraphics[width=0.3\textwidth]{curve.png}
+\end{frame}
+% section 递归 (end)
+\end{document}
