@@ -1,0 +1,555 @@
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\usepackage{fontspec}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+\setmainfont{DejaVu Sans}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{基于Flask的Web开发}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents[currentsection,currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show,
+]
+\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+
+
+\section{A Minimal Application}
+\begin{frame}
+  \frametitle{安装}
+	\begin{block}
+		{Flask}
+		\begin{itemize}
+			\item pip install flask
+			\item conda install flask
+		\end{itemize}
+	\end{block}
+	\centering
+	\includegraphics[width=.3\textwidth]{logo.png}
+\end{frame}
+
+\begin{frame}[t,fragile]{A Minimal Application}
+
+\begin{verbatim}
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{A Minimal Application}
+
+	\begin{block}
+		{启动服务器}
+		\begin{itemize}
+			\item 保存文件为hello.py
+			\item export FLASK\_APP=hello.py (Linux/OSX)
+			\item set FLASK\_APP=hello.py (Windows)
+			\item flask run
+			\item 使用-\mbox{}-host=0.0.0.0使能跨IP访问
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{A Minimal Application}
+
+
+\begin{verbatim}
+
+$ export FLASK_APP=hello.py (run set FLASK_APP=hello.py on Windows)
+$ flask run
+ * Running on http://127.0.0.1:5000/
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{A Minimal Application}
+
+This launches a very simple builtin server, which is good enough for testing
+but probably not what you want to use in production. For deployment options see
+Deployment Options.
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{A Minimal Application}
+
+
+\begin{verbatim}
+
+flask run --host=0.0.0.0
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\section{Routing}
+
+\begin{frame}[t]{Routing}
+
+	\begin{block}
+		{路由}
+		\begin{itemize}
+			\item 使用@app.route()标注URL中的链接
+			\item 函数的返回值响应GET/POST请求
+			\item 建立URL与函数间的绑定
+			\item 使用<variable>与函数参数表达动态URL
+		\end{itemize}
+		
+	\end{block}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Routing}
+
+
+\begin{verbatim}
+
+@app.route('/')
+def index():
+    return 'Index Page'
+
+@app.route('/hello')
+def hello():
+    return 'Hello, World'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{Routing}
+
+
+\begin{verbatim}
+
+@app.route('/user/<username>')
+def show_user_profile(username):
+    # show the user profile for that user
+    return 'User %s' % username
+
+@app.route('/post/<int:post_id>')
+def show_post(post_id):
+    # show the post with the given id, the id is an integer
+    return 'Post %d' % post_id
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{Routing}
+
+HTTP (the protocol web applications are speaking) knows different methods for
+accessing URLs.  By default, a route only answers to GET requests, but that
+can be changed by providing the methods argument to the
+route() decorator.  Here are some examples:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Routing}
+
+
+\begin{verbatim}
+
+from flask import request
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        do_the_login()
+    else:
+        show_the_login_form()
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\section{Rendering Templates}
+
+\begin{frame}[t]{Rendering Templates}
+
+Generating HTML from within Python is not fun, and actually pretty
+cumbersome because you have to do the HTML escaping on your own to keep
+the application secure.  Because of that Flask configures the Jinja2 template engine for you automatically.
+
+\end{frame}
+
+
+\begin{frame}[t]{Rendering Templates}
+
+To render a template you can use the render\_template()
+method.  All you have to do is provide the name of the template and the
+variables you want to pass to the template engine as keyword arguments.
+Heres a simple example of how to render a template:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Rendering Templates}
+
+
+\begin{verbatim}
+
+from flask import render_template
+
+@app.route('/hello/')
+@app.route('/hello/<name>')
+def hello(name=None):
+    return render_template('hello.html', name=name)
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Rendering Templates}
+
+
+\begin{verbatim}
+
+/application.py
+/templates
+    /hello.html
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{Rendering Templates}
+
+Case 2: a package:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Rendering Templates}
+
+
+\begin{verbatim}
+
+/application
+    /__init__.py
+    /templates
+        /hello.html
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[t,fragile]{Rendering Templates}
+
+
+\begin{verbatim}
+
+<!doctype html>
+<title>Hello from Flask</title>
+{% if name %}
+  <h1>Hello {{ name }}!</h1>
+{% else %}
+  <h1>Hello, World!</h1>
+{% endif %}
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+
+\section{Accessing Request Data}
+
+
+\begin{frame}[t,fragile]{Accessing Request Data}
+
+
+\begin{verbatim}
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if valid_login(request.form['username'],
+                       request.form['password']):
+            return log_the_user_in(request.form['username'])
+        else:
+            error = 'Invalid username/password'
+    # the code below is executed if the request method
+    # was GET or the credentials were invalid
+    return render_template('login.html', error=error)
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{Accessing Request Data}
+
+
+\begin{verbatim}
+
+searchword = request.args.get('key', '')
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\section{Redirects and Errors}
+
+\begin{frame}[t]{Redirects and Errors}
+
+To redirect a user to another endpoint, use the redirect()
+function; to abort a request early with an error code, use the
+abort() function:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Redirects and Errors}
+
+
+\begin{verbatim}
+
+from flask import abort, redirect, url_for
+
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
+
+@app.route('/login')
+def login():
+    abort(401)
+    this_is_never_executed()
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{Redirects and Errors}
+
+This is a rather pointless example because a user will be redirected from
+the index to a page they cannot access (401 means access denied) but it
+shows how that works.
+
+\end{frame}
+
+\section{Sessions}
+
+\begin{frame}[t]{Sessions}
+
+In addition to the request object there is also a second object called
+session which allows you to store information specific to a
+user from one request to the next.  This is implemented on top of cookies
+for you and signs the cookies cryptographically.  What this means is that
+the user could look at the contents of your cookie but not modify it,
+unless they know the secret key used for signing.
+
+\end{frame}
+
+\begin{frame}[t,fragile]{Sessions}
+
+
+\begin{verbatim}
+
+from flask import Flask, session, redirect, url_for, escape, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    if 'username' in session:
+        return 'Logged in as %s' % escape(session['username'])
+    return 'You are not logged in'
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('index'))
+    return '''
+        <form method="post">
+            <p><input type=text name=username>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+# set the secret key.  keep this really secret:
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{Sessions}
+
+
+\begin{verbatim}
+
+>>> import os
+>>> os.urandom(24)
+'\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+
+Just take that thing and copy/paste it into your code and you're done.
+
+
+\end{verbatim}
+\end{frame}
+\section{A Demo} % (fold)
+\label{sec:A Demo}
+\begin{frame}
+  \frametitle{Debian Release Critical Bug Summary}
+	\includegraphics[width=.5\textwidth]{screenshot.png}
+
+	\url{https://bugs.debian.org/release-critical/debian/all.html}
+\end{frame}
+
+\begin{frame}
+  \frametitle{四个步骤}
+	\begin{itemize}
+		\item 数据获取(requests)
+		\item 数据过滤(bs4)
+		\item 数据存储(sqlite3)
+		\item 数据展示(flask)
+	\end{itemize}
+\end{frame}
+% section A Demo (end)
+\end{document}
+
