@@ -1,0 +1,186 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\usepackage{color}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+\raggedright
+
+\let\oldfootnotesize\footnotesize
+\renewcommand*{\footnotesize}{\oldfootnotesize\tiny}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{Python日常}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+
+\section{Python日常: os}
+
+\begin{frame}[t,fragile]{os}
+\begin{verbatim}
+>>> import os
+>>> os.system("date")
+2020年 11月 08日 星期日 17:07:33 CST
+>>> os.path.exists("a.txt")
+True
+>>> os.getcwd()
+'/home/ren'
+>>> os.chdir("/tmp")
+>>> os.mkdir("/tmp/abc")
+>>> if os.path.exists("a.txt"):
+...     os.rename("a.txt", "b.txt")
+
+>>> os.remove("b.txt")
+
+\end{verbatim}
+
+	
+\end{frame}
+
+\begin{frame}[t]{常用函数}
+	\begin{table}
+		\caption{os函数说明}
+		\scriptsize
+		\begin{tabular}{lr}
+os.path.abspath(path) & 返回绝对路径\\
+os.path.basename(path) & 返回文件名\\
+os.path.commonprefix(list) & 返回list所有path共有的最长的路径\\
+os.path.dirname(path) & 返回文件路径\\
+os.path.exists(path) & 如果路径path存在，返回True；不存在，返回False\\
+os.path.expanduser(path) & 把path中包含的"~"和"~user"转换成用户目录\\
+os.path.getsize(path) & 返回文件大小，如果文件不存在就返回错误\\
+os.path.isfile(path) & 判断路径是否为文件\\
+os.path.isdir(path) & 判断路径是否为目录\\
+		\end{tabular}
+
+	\end{table}
+	
+\end{frame}
+
+\section{Python日常: subprocess}
+\begin{frame}[t,fragile]{subprocess}
+\begin{verbatim}
+
+>>> import subprocess
+>>> subprocess.call(['dir', '/a'])
+>>> subprocess.call("dir /a", shell=True)
+>>> return_data = subprocess.call(['ls'], stdout=subprocess.PIPE)
+>>> result_txt = return_data.stdout.decode("utf-8")
+\end{verbatim}
+	
+\end{frame}
+
+\section{Python日常: glob}
+\begin{frame}[t,fragile]{glob}
+
+\begin{verbatim}
+>>> from glob import glob
+>>> x = glob("*.txt")
+>>> for filename in x:
+...     print(x)
+a.txt
+b.txt
+c.txt
+>>> for f in glob("**/*.txt", recursive=True):
+...     print(f)
+a.txt
+b.txt
+c.txt
+d/a.txt
+...
+\end{verbatim}
+	
+\end{frame}
+
+\begin{frame}[t]{课堂练习}
+给定目录DIR，将其中文件名包含的空格替换为下划线，并将小写字符变为大写。	
+\end{frame}
+
+
+\end{document}
