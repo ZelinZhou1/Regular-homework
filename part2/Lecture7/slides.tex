@@ -1,0 +1,1104 @@
+
+\documentclass{beamer}
+
+
+\mode<presentation>
+{
+  \usetheme{CambridgeUS}
+	\usecolortheme{beaver}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+
+\usepackage{xeCJK}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{pifont}
+\usepackage{bibentry}
+\usepackage{verbatim}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\setCJKmainfont{WenQuanYi Micro Hei}
+
+
+\title[开源软件基础] 
+{开源软件基础}
+\subtitle{Beautiful Soup}
+
+\author[Zhilei Ren] 
+{Zhilei Ren}
+
+\institute[OSCAR Team] % (optional, but mostly needed)
+{
+\\\includegraphics[width=0.2\textwidth]{../../utils/logo.jpg}\\
+OSCAR Team, School of Software, 
+Dalian University of Technology
+}
+
+
+\subject{Open source software}
+
+
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{../../utils/logo.jpg}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry journal}{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%\begin{frame}{Outline}
+%  \tableofcontents[currentsection,currentsubsection, 
+%    hideothersubsections, 
+%    sectionstyle=show,
+%]
+%\end{frame}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Outline}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+\section{快速开始}
+
+\begin{frame}[t,fragile]{快速开始}
+
+下面的一段HTML代码将作为例子被多次用到.这是 爱丽丝梦游仙境的 的一段内容(以后内容中简称为 爱丽丝 的文档):
+\scriptsize
+
+\begin{verbatim}
+html_doc = """
+<html><head><title>The Dormouse's story</title></head>
+<body>
+<p class="title"><b>The Dormouse's story</b></p>
+
+<p class="story">Once upon a time there were three little sisters; and their names were
+<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+<a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+<a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+and they lived at the bottom of a well.</p>
+
+<p class="story">...</p>
+"""
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{快速开始}
+
+使用BeautifulSoup解析这段代码,能够得到一个 BeautifulSoup 的对象,并能按照标准的缩进格式的结构输出:
+    \tiny
+
+\begin{verbatim}
+>>> from bs4 import BeautifulSoup
+>>> soup = BeautifulSoup(html_doc)
+>>> print(soup.prettify())
+ <html>
+  <head>
+   <title>
+    The Dormouse's story
+   </title>
+  </head>
+  <body>
+   <p class="title">
+    <b>
+     The Dormouse's story
+    </b>
+   </p>
+   <p class="story">
+    Once upon a time there were three little sisters; and their names were
+    <a class="sister" href="http://example.com/elsie" id="link1">
+     Elsie
+    </a>
+    ,
+    <a class="sister" href="http://example.com/lacie" id="link2">
+     Lacie
+    </a>
+    and
+    <a class="sister" href="http://example.com/tillie" id="link2">
+     Tillie
+    </a>
+    ; and they lived at the bottom of a well.
+   </p>
+   <p class="story">
+    ...
+   </p>
+  </body>
+ </html>
+
+
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[t,fragile]{快速开始}
+几个简单的浏览结构化数据的方法:
+
+\scriptsize
+\begin{verbatim}
+>>> soup.title
+<title>The Dormouse's story</title>
+>>> soup.title.name
+u'title'
+>>> soup.title.string
+u'The Dormouse's story'
+>>> soup.title.parent.name
+u'head'
+>>> soup.p
+<p class="title"><b>The Dormouse's story</b></p>
+>>> soup.p['class']
+u'title'
+>>> soup.a
+<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+>>> soup.find_all('a')
+[<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+>>> soup.find(id="link3")
+<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{快速开始}
+从文档中找到所有<a>标签的链接:
+\begin{verbatim}
+
+for link in soup.find_all('a'):
+    print(link.get('href'))
+    # http://example.com/elsie
+    # http://example.com/lacie
+    # http://example.com/tillie
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{快速开始}
+从文档中获取所有文字内容:
+\begin{verbatim}
+>>> print(soup.get_text())
+ The Dormouse's story
+
+ The Dormouse's story
+
+ Once upon a time there were three little sisters; and their names were
+ Elsie,
+ Lacie and
+ Tillie;
+ and they lived at the bottom of a well.
+
+ ...
+\end{verbatim}
+\end{frame}
+
+% \section{对象的种类}
+% 
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% Beautiful Soup将复杂HTML文档转换成一个复杂的树形结构,每个节点都是Python对象,所有对象可以归纳为4种: Tag , NavigableString , BeautifulSoup , Comment .
+% 
+% \begin{verbatim}
+% 
+% soup = BeautifulSoup('<b class="boldest">Extremely bold</b>')
+% tag = soup.b
+% type(tag)
+% # <class 'bs4.element.Tag'>
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[t]{对象的种类}
+% 
+% Tag有很多方法和属性,在 遍历文档树 和 搜索文档树 中有详细解释.现在介绍一下tag中最重要的属性: name和attributes
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% 每个tag都有自己的名字,通过 .name 来获取:
+% 
+% \begin{verbatim}
+% 
+% tag.name
+% # u'b'
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% 一个tag可能有很多个属性. tag <b class="boldest"> 有一个 “class” 的属性,值为 “boldest” . tag的属性的操作方法与字典相同:
+% 
+% \begin{verbatim}
+% 
+% tag['class']
+% # u'boldest'
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% 也可以直接”点”取属性, 比如: .attrs :
+% 
+% \begin{verbatim}
+% 
+% tag.attrs
+% # {u'class': u'boldest'}
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% 字符串常被包含在tag内.Beautiful Soup用 NavigableString 类来包装tag中的字符串:
+% 
+% \begin{verbatim}
+% 
+% tag.string
+% # u'Extremely bold'
+% type(tag.string)
+% # <class 'bs4.element.NavigableString'>
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% BeautifulSoup 对象表示的是一个文档的全部内容.大部分时候,可以把它当作 Tag 对象,它支持 遍历文档树 和 搜索文档树 中描述的大部分的方法.
+% 
+% 因为 BeautifulSoup 对象并不是真正的HTML或XML的tag,所以它没有name和attribute属性.但有时查看它的 .name 属性是很方便的,所以 BeautifulSoup 对象包含了一个值为 “[document]” 的特殊属性 .name
+% 
+% \begin{verbatim}
+% 
+% soup.name
+% # u'[document]'
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[t]{对象的种类}
+% 
+% Tag , NavigableString , BeautifulSoup 几乎覆盖了html和xml中的所有内容,但是还有一些特殊对象.容易让人担心的内容是文档的注释部分:
+% 
+% \end{frame}
+% 
+% 
+% \begin{frame}[t,fragile]{对象的种类}
+% 
+% 
+% \begin{verbatim}
+% 
+% markup = "<b><!--Hey, buddy. Want to buy a used parser?--></b>"
+% soup = BeautifulSoup(markup)
+% comment = soup.b.string
+% type(comment)
+% # <class 'bs4.element.Comment'>
+% 
+% 
+% \end{verbatim}
+% 
+% 
+% \end{frame}
+% 
+% 
+\section{遍历文档树}
+
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+还拿"爱丽丝梦游仙境"的文档来做例子:
+
+\tiny
+\begin{verbatim}
+
+html_doc = """
+<html><head><title>The Dormouse's story</title></head>
+
+<p class="title"><b>The Dormouse's story</b></p>
+
+<p class="story">Once upon a time there were three little sisters; and their names were
+<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
+<a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
+<a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
+and they lived at the bottom of a well.</p>
+
+<p class="story">...</p>
+"""
+
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(html_doc)
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{遍历文档树}
+
+通过这段例子来演示怎样从文档的一段内容找到另一段内容
+
+\begin{block}
+    {遍历方法}
+    \begin{itemize}
+        \item 使用点号遍历，如doc.body.a代表body下第一个<a>连接
+        \item .descendants表示子节点
+        \item .next\_element表示下一个节点
+        \item .next\_sibling表示下一个兄弟
+        \item .name返回标签类型
+        \item .get\_text()返回文本
+        \item 复数表示生成器
+        \item find\_all更好用
+        \item select也不错，支持CSS选择器
+    \end{itemize}
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+
+\begin{verbatim}
+
+soup.head
+# <head><title>The Dormouse's story</title></head>
+
+soup.title
+# <title>The Dormouse's story</title>
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+通过点取属性的方式只能获得当前名字的第一个tag:
+
+\begin{verbatim}
+
+soup.a
+# <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+如果想要得到所有的<a>标签,或是通过名字得到比一个tag更多的内容的时候,就需要用到 Searching the tree 中描述的方法,比如: find\_all()
+
+\begin{verbatim}
+
+soup.find_all('a')
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+tag的 .contents 属性可以将tag的子节点以列表的方式输出:
+
+\begin{verbatim}
+
+head_tag = soup.head
+head_tag
+# <head><title>The Dormouse's story</title></head>
+
+head_tag.contents
+[<title>The Dormouse's story</title>]
+
+title_tag = head_tag.contents[0]
+title_tag
+# <title>The Dormouse's story</title>
+title_tag.contents
+# [u'The Dormouse's story']
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+BeautifulSoup 对象本身一定会包含子节点,也就是说<html>标签也是 BeautifulSoup 对象的子节点:
+
+\begin{verbatim}
+
+len(soup.contents)
+# 1
+soup.contents[0].name
+# u'html'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+通过tag的 .children 生成器,可以对tag的子节点进行循环:
+
+\begin{verbatim}
+
+for child in title_tag.children:
+    print(child)
+    # The Dormouse's story
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t]{遍历文档树}
+
+继续分析文档树,每个tag或字符串都有父节点:被包含在某个tag中
+
+通过 .parent 属性来获取某个元素的父节点.在例子“爱丽丝”的文档中,<head>标签是<title>标签的父节点:
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+\begin{verbatim}
+
+title_tag = soup.title
+title_tag
+# <title>The Dormouse's story</title>
+title_tag.parent
+# <head><title>The Dormouse's story</title></head>
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+文档title的字符串也有父节点:<title>标签
+
+\begin{verbatim}
+
+title_tag.string.parent
+# <title>The Dormouse's story</title>
+
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+文档的顶层节点比如<html>的父节点是 BeautifulSoup 对象:
+
+\begin{verbatim}
+
+html_tag = soup.html
+type(html_tag.parent)
+# <class 'bs4.BeautifulSoup'>
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+BeautifulSoup 对象的 .parent 是None:
+
+\begin{verbatim}
+
+print(soup.parent)
+# None
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+通过元素的 .parents 属性可以递归得到元素的所有父辈节点,下面的例子使用了 .parents 方法遍历了<a>标签到根节点的所有节点.
+
+\begin{verbatim}
+link = soup.a
+link
+# <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>
+for parent in link.parents:
+    if parent is None:
+        print(parent)
+    else:
+        print(parent.name)
+# p
+# body
+# html
+# [document]
+# None
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+
+\begin{verbatim}
+
+sibling_soup = BeautifulSoup("<a><b>text1</b><c>text2</c></b></a>")
+print(sibling_soup.prettify())
+# <html>
+#  <body>
+#   <a>
+#    <b>
+#     text1
+#    </b>
+#    <c>
+#     text2
+#    </c>
+#   </a>
+#  </body>
+# </html>
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t]{遍历文档树}
+
+因为<b>标签和<c>标签是同一层:他们是同一个元素的子节点,所以<b>和<c>可以被称为兄弟节点.一段文档以标准格式输出时,兄弟节点有相同的缩进级别.在代码中也可以使用这种关系.
+
+\end{frame}
+
+\begin{frame}[t,fragile]{遍历文档树}
+
+\begin{verbatim}
+last_a_tag = soup.find("a", id="link3")
+last_a_tag
+# <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>
+
+last_a_tag.next_sibling
+# '; and they lived at the bottom of a well.'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\section{搜索文档树}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+Beautiful Soup定义了很多搜索方法,这里着重介绍2个: find() 和 find\_all() .其它方法的参数和用法类似,请读者举一反三.
+
+使用 find\_all() 类似的方法可以查找到想要查找的文档内容
+
+介绍 find\_all() 方法前,先介绍一下过滤器的类型,这些过滤器贯穿整个搜索的API.过滤器可以被用在tag的name中,节点的属性中,字符串中或他们的混合中.
+
+最简单的过滤器是字符串.在搜索方法中传入一个字符串参数,Beautiful Soup会查找与字符串完整匹配的内容,下面的例子用于查找文档中所有的<b>标签:
+
+\begin{verbatim}
+
+soup.find_all('b')
+# [<b>The Dormouse's story</b>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+如果传入正则表达式作为参数,Beautiful Soup会通过正则表达式来匹配内容.下面例子中找出所有以b开头的标签,这表示<body>和<b>标签都应该被找到:
+
+\begin{verbatim}
+import re
+for tag in soup.find_all(re.compile("^b")):
+    print(tag.name)
+# body
+# b
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+下面代码找出所有名字中包含”t”的标签:
+\begin{verbatim}
+for tag in soup.find_all(re.compile("t")):
+    print(tag.name)
+# html
+# title
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+如果传入列表参数,Beautiful Soup会将与列表中任一元素匹配的内容返回.下面代码找到文档中所有<a>标签和<b>标签:
+
+\begin{verbatim}
+soup.find_all(["a", "b"])
+# [<b>The Dormouse's story</b>,
+#  <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+True 可以匹配任何值,下面代码查找到所有的tag,但是不会返回字符串节点
+
+\begin{verbatim}
+for tag in soup.find_all(True):
+    print(tag.name)
+# html
+# head
+# title
+# body
+# p
+# b
+# p
+# a
+# a
+# a
+# p
+
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+find\_all( name , attrs , recursive , text , **kwargs )
+
+find\_all() 方法搜索当前tag的所有tag子节点,并判断是否符合过滤器的条件.这里有几个例子:
+
+\tiny
+\begin{verbatim}
+
+soup.find_all("title")
+# [<title>The Dormouse's story</title>]
+
+soup.find_all("p", "title")
+# [<p class="title"><b>The Dormouse's story</b></p>]
+
+soup.find_all("a")
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+soup.find_all(id="link2")
+# [<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>]
+
+import re
+soup.find(text=re.compile("sisters"))
+# u'Once upon a time there were three little sisters; and their names were\n'
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+name 参数可以查找所有名字为 name 的tag,字符串对象会被自动忽略掉.
+
+\begin{verbatim}
+
+soup.find_all("title")
+# [<title>The Dormouse's story</title>]
+
+soup.find_all(id='link2')
+# [<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>]
+
+
+
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+如果传入 href 参数,Beautiful Soup会搜索每个tag的”href”属性:
+
+\begin{verbatim}
+
+soup.find_all(href=re.compile("elsie"))
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+使用多个指定名字的参数可以同时过滤tag的多个属性:
+
+\begin{verbatim}
+
+soup.find_all(href=re.compile("elsie"), id='link1')
+# [<a class="sister" href="http://example.com/elsie" id="link1">three</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+可以通过 find\_all() 方法的 attrs 参数定义一个字典参数来搜索包含特殊属性的tag:
+
+\begin{verbatim}
+
+data_soup.find_all(attrs={"data-foo": "value"})
+# [<div data-foo="value">foo!</div>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+按照CSS类名搜索tag的功能非常实用,但标识CSS类名的关键字 class 在Python中是保留字,使用 class 做参数会导致语法错误.从Beautiful Soup的4.1.1版本开始,可以通过 class\_ 参数搜索有指定CSS类名的tag:
+
+\scriptsize
+\begin{verbatim}
+
+soup.find_all("a", class_="sister")
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+tag的 class 属性是 多值属性 .按照CSS类名搜索tag时,可以分别搜索tag中的每个CSS类名:
+\scriptsize
+
+\begin{verbatim}
+
+css_soup = BeautifulSoup('<p class="body strikeout"></p>')
+css_soup.find_all("p", class_="strikeout")
+# [<p class="body strikeout"></p>]
+
+css_soup.find_all("p", class_="body")
+# [<p class="body strikeout"></p>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+通过 text 参数可以搜搜文档中的字符串内容.与 name 参数的可选值一样, text 参数接受 字符串 , 正则表达式 , 列表, True . 看例子:
+
+\scriptsize
+\begin{verbatim}
+
+soup.find_all(text="Elsie")
+# [u'Elsie']
+
+soup.find_all(text=["Tillie", "Elsie", "Lacie"])
+# [u'Elsie', u'Lacie', u'Tillie']
+
+soup.find_all(text=re.compile("Dormouse"))
+[u"The Dormouse's story", u"The Dormouse's story"]
+
+\end{verbatim}
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+虽然 text 参数用于搜索字符串,还可以与其它参数混合使用来过滤tag.Beautiful Soup会找到 .string 方法与 text 参数值相符的tag.下面代码用来搜索内容里面包含“Elsie”的<a>标签:
+
+\begin{verbatim}
+
+soup.find_all("a", text="Elsie")
+# [<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t]{搜索文档树}
+
+find\_all() 和 find() 只搜索当前节点的所有子节点,孙子节点等. find\_parents() 和 find\_parent() 用来搜索当前节点的父辈节点,搜索方法与普通tag的搜索方法相同,搜索文档搜索文档包含的内容. 我们从一个文档中的一个叶子节点开始:
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+
+\begin{verbatim}
+
+a_string = soup.find(text="Lacie")
+a_string
+# u'Lacie'
+
+a_string.find_parents("a")
+# [<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>]
+
+a_string.find_parent("p")
+# <p class="story">Once upon a time there were three little sisters; and their names were
+#  <a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a> and
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>;
+#  and they lived at the bottom of a well.</p>
+
+a_string.find_parents("p", class="title")
+# []
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+Beautiful Soup支持大部分的CSS选择器,在 Tag 或 BeautifulSoup 对象的 .select() 方法中传入字符串参数,即可使用CSS选择器的语法找到tag:
+
+\begin{verbatim}
+
+soup.select("title")
+# [<title>The Dormouse's story</title>]
+
+soup.select("p nth-of-type(3)")
+# [<p class="story">...</p>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+通过tag标签逐层查找:
+
+\begin{verbatim}
+soup.select("body a")
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie"  id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+soup.select("html head title")
+# [<title>The Dormouse's story</title>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+通过CSS的类名查找:
+
+\begin{verbatim}
+
+soup.select(".sister")
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+soup.select("[class~=sister]")
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+通过tag的id查找:
+
+\begin{verbatim}
+
+soup.select("#link1")
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>]
+
+soup.select("a#link2")
+# [<a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+通过是否存在某个属性来查找:
+
+\begin{verbatim}
+
+soup.select('a[href]')
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+
+\end{verbatim}
+
+
+\end{frame}
+
+
+\begin{frame}[t,fragile]{搜索文档树}
+
+通过属性的值来查找:
+\tiny
+
+\begin{verbatim}
+soup.select('a[href="http://example.com/elsie"]')
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>]
+
+soup.select('a[href^="http://example.com/"]')
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>,
+#  <a class="sister" href="http://example.com/lacie" id="link2">Lacie</a>,
+#  <a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+soup.select('a[href$="tillie"]')
+# [<a class="sister" href="http://example.com/tillie" id="link3">Tillie</a>]
+
+soup.select('a[href*=".com/el"]')
+# [<a class="sister" href="http://example.com/elsie" id="link1">Elsie</a>]
+
+
+\end{verbatim}
+\end{frame}
+
+\end{document}
